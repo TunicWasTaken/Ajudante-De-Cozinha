@@ -1,0 +1,41 @@
+{   
+	"Info" : {
+		"Name" : Name_Goes_Here,
+		"Submitter" : Submitting_User_Id,
+		"Decription" : Description,
+		"Photo" : Photo_Path,
+		"Meal_Type" : Meal_Type,
+		"Tags": [Tag1],
+		"Total_Time" : Total_Time,				   // Min
+		"Calories" : Calories,                     // KCal
+		"Portion_Size" : Total_Portion_Size,
+		"Difficulty" : Difficulty,
+	},
+	"Ingredients" : [
+		{
+			"Name" : Name,
+			"Quantity" : Quantity,
+			"Unit": Unit,
+			"Substitutions" : [
+				{
+					"Name" : Name,
+					"Quantity" : Quantity,
+					"Unit": Unit
+				}
+			]
+		}
+	],
+	"Steps" : [
+		{
+			"Step_Number": Step_Number,
+			"Instruction": "Instruction goes here",
+			"Time_To_Wait": Time                    // Time == 0 -> Not Waiting Step; Time > 0 -> Waiting Step
+		},
+		{
+			"Step_Number": Step_Number,
+			"Instruction": "Instruction goes here",
+			"Time_To_Wait": Time
+		}
+	],
+	"Complimentary_Recipes" : [Recipe1_Id, Recipe2_Id]
+}
