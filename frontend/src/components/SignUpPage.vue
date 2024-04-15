@@ -7,8 +7,14 @@
   <div class="container">
     <div class="box">
       <div class="login">
-        <h2>Login</h2>
+        <h2>Sign up</h2>
         <form @submit.prevent="loginUser()">
+          <input
+            type="text"
+            placeholder="Username"
+            required
+            v-model="username"
+          />
           <input type="email" placeholder="Email" required v-model="email" />
           <input
             type="password"
@@ -16,7 +22,7 @@
             required
             v-model="password"
           />
-          <p>Don't have an account? <a href="/sign-up">Sign up</a></p>
+          <p>Already have an account? <a href="/login">Log in</a></p>
           <button>Submit</button>
         </form>
       </div>
@@ -26,10 +32,12 @@
 
 <script setup>
 import { ref } from "vue";
+const username = ref([]);
 const email = ref([]);
 const password = ref([]);
 
 function loginUser() {
+  console.log(username.value);
   console.log(email.value);
   console.log(password.value);
 }
