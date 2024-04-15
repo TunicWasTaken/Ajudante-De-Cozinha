@@ -18,7 +18,7 @@ def get_users():
 
     for user in user_list:
         _id = str(user["_id"])
-        user = User(name=user["name"], email=user["email"], permissions=user["permissions"]).to_json()
+        user = User(name=user["name"], email=user["email"], password=user["password"], permissions=user["permissions"]).to_json()
         user["id"] = _id
 
         response.append(user)

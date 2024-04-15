@@ -6,11 +6,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "HomePage",
+    meta: { title: "Home" },
     component: HomePage,
   },
   {
     path: "/login",
     name: "LoginPage",
+    meta: { title: "Login" },
     component: LoginPage,
   },
 ];
@@ -18,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to) => {
+  console.log(to);
+  document.title = to.meta.title as string;
 });
 
 export default router;
