@@ -1,24 +1,26 @@
 <template>
-  <div class="logo">
-    <a href="/">
-      <img src="../assets/logo.png" height="45" />
-    </a>
-  </div>
-  <div class="container">
-    <div class="box">
-      <div class="login">
-        <h2>Login</h2>
-        <form @submit.prevent="loginUser()">
-          <input type="email" placeholder="Email" required v-model="email" />
-          <input
-            type="password"
-            placeholder="Password"
-            required
-            v-model="password"
-          />
-          <p>Don't have an account? <a href="/sign-up">Sign up</a></p>
-          <button>Submit</button>
-        </form>
+  <div class="wrapper">
+    <div class="logo">
+      <a href="/">
+        <img src="../assets/logo.png" height="45" />
+      </a>
+    </div>
+    <div class="container">
+      <div class="box">
+        <div class="login">
+          <h2>Login</h2>
+          <form @submit.prevent="loginUser()">
+            <input type="email" placeholder="Email" required v-model="email" />
+            <input
+              type="password"
+              placeholder="Password"
+              required
+              v-model="password"
+            />
+            <p>Don't have an account? <a href="/sign-up">Sign up</a></p>
+            <button>Submit</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -36,7 +38,7 @@ function loginUser() {
 </script>
 
 <style>
-body {
+.wrapper {
   background-image: url("/src/assets/login-background.png");
   background-repeat: no-repeat;
   background-attachment: fixed;

@@ -12,33 +12,23 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import axios from "axios";
-export default {
-  name: "HomePage",
-  data() {
-    return {
-      msg: "Olá mundo",
-    };
-  },
-  methods: {
-    getResponse() {
-      const path = "http://localhost:5000/api/users";
-      axios
-        .get(path)
-        .then((res) => {
-          console.log(res.data);
-          this.msg = res.data;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
-  },
-  created() {
-    this.getResponse();
-  },
-};
+import { ref } from "vue";
+
+const msg = ref(getData());
+
+function getData() {
+  const path = "http://localhost:5000/api/users";
+  axios
+    .get(path)
+    .then((res) => {
+      msg.value = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 </script>
 
 <style>
