@@ -9,19 +9,27 @@
       <div class="box">
         <div class="login">
           <h2>Sign up</h2>
-          <form @submit.prevent="loginUser()">
+          <form @submit.prevent="createUser()">
+            <span class="error_msg" v-if="account_error"
+              >Account with that {{ account_error_value }} already exists!</span
+            >
             <input
               type="text"
               placeholder="Username"
               required
-              v-model="username"
+              v-model="new_username"
             />
-            <input type="email" placeholder="Email" required v-model="email" />
+            <input
+              type="email"
+              placeholder="Email"
+              required
+              v-model="new_email"
+            />
             <input
               type="password"
               placeholder="Password"
               required
-              v-model="password"
+              v-model="new_password"
             />
             <p>Already have an account? <a href="/login">Log in</a></p>
             <button>Submit</button>
@@ -33,15 +41,39 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { ref } from "vue";
-const username = ref([]);
-const email = ref([]);
-const password = ref([]);
+const new_username = ref([]);
+const new_email = ref([]);
+const new_password = ref([]);
+const account_error = ref(false);
+const account_error_value = ref([]);
 
-function loginUser() {
-  console.log(username.value);
-  console.log(email.value);
-  console.log(password.value);
+function createUser() {
+  const path = "http://localhost:5000/api/create_user";
+
+  axios
+    .post(path, {
+      username: new_username.value,
+      email: new_email.value,
+      password: new_password.value,
+    })
+    .then((res) => {
+      console.log("ya1");
+      console.log(res);
+    })
+    .catch((err) => {
+      if (err.response) {
+        if (err.response.data == "username") {
+          account_error_value.value = "username";
+        } else {
+          account_error_value.value = "email";
+        }
+        account_error.value = true;
+      } else {
+        console.log(err);
+      }
+    });
 }
 </script>
 
@@ -67,7 +99,7 @@ function loginUser() {
 
 .box {
   background-color: rgb(41, 41, 41);
-  padding: 30px;
+  padding: 20px;
   border-radius: 10px;
 }
 
@@ -79,6 +111,15 @@ function loginUser() {
   color: dodgerblue;
 }
 
+.error_msg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 65%;
+  font-size: 15px;
+  color: lightcoral;
+}
 form {
   display: flex;
   justify-content: center;

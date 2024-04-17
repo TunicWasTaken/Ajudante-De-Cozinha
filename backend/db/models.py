@@ -1,10 +1,9 @@
 class User(object):
 
-    def __init__(self, name, email, password, permissions):
+    def __init__(self, name, email, password):
         self.name = name
         self.email = email
         self.password = password
-        self.permissions = permissions
 
 
     def to_json(self):
@@ -13,6 +12,5 @@ class User(object):
             "name": self.name,
             "email": self.email,
             "password": self.password,
-            "permissions": self.permissions
         }
     

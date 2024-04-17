@@ -16,19 +16,17 @@
 import axios from "axios";
 import { ref } from "vue";
 
-const msg = ref(getData());
+const msg = ref([]);
 
-function getData() {
-  const path = "http://localhost:5000/api/users";
-  axios
-    .get(path)
-    .then((res) => {
-      msg.value = res.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
+const path = "http://localhost:5000/api/users";
+axios
+  .get(path)
+  .then((res) => {
+    msg.value = res.data;
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 </script>
 
 <style>

@@ -10,7 +10,12 @@
         <div class="login">
           <h2>Login</h2>
           <form @submit.prevent="loginUser()">
-            <input type="email" placeholder="Email" required v-model="email" />
+            <input
+              type="email"
+              placeholder="Username/Email"
+              required
+              v-model="email"
+            />
             <input
               type="password"
               placeholder="Password"
