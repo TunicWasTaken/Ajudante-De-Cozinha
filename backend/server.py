@@ -1,9 +1,15 @@
 from flask import Flask
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from config import AppConfig
 
 app = Flask(__name__)
 app.app_context().push()
 CORS(app)
+JWTManager(app)
+
+app.config.from_object(AppConfig)
+
 
 from routes import usersapi
 #db = DB()

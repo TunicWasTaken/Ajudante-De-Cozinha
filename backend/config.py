@@ -5,3 +5,7 @@ class Config():
     MONGODB_NAME = 'Ajudante_De_Cozinha'
     MONGODB_USERS = 'Users'
     MONGODB_RECIPES = 'Recipes'
+
+
+class AppConfig():
+    JWT_SECRET_KEY = 'very-secret'

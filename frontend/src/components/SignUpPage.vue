@@ -43,11 +43,13 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 const new_username = ref([]);
 const new_email = ref([]);
 const new_password = ref([]);
 const account_error = ref(false);
 const account_error_value = ref([]);
+const router = useRouter();
 
 function createUser() {
   const path = "http://localhost:5000/api/create_user";
@@ -58,9 +60,9 @@ function createUser() {
       email: new_email.value,
       password: new_password.value,
     })
-    .then((res) => {
-      console.log("ya1");
-      console.log(res);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .then(async (res) => {
+      await router.push("/");
     })
     .catch((err) => {
       if (err.response) {

@@ -1,5 +1,6 @@
 from bson.json_util import dumps
 from flask import current_app, jsonify, request
+from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies
 from db.models import User
 from . import init_users
 
@@ -41,8 +42,13 @@ def create_user():
     if users.find_one({'name': req["username"]}):
         return "username", 400
     
+    _id = users.insert_one(new_user.to_json()).inserted_id
 
-    
-    res = users.insert_one(new_user.to_json())
+    access_token = create_access_token(identity=str(_id))
+    refresh_token = create_refresh_token(identity=str(_id))
 
-    return jsonify(str(res.inserted_id)), 201
+    response = jsonify()
+    set_access_cookies(response, access_token)
+    set_refresh_cookies(response, refresh_token)
+
+    return response, 201
