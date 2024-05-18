@@ -1,32 +1,20 @@
 <template>
-  <div>
-    <div class="topnav">
-      <a class="Home" href="/">Home</a>
-      <a class="login" href="/login">Login</a>
-    </div>
-    <div class="bemvindo">
-      <h1>
-        {{ msg }}
-      </h1>
-    </div>
+  <div v-if="authStore.user">
+    <h1>{{ authStore.user.name }}</h1>
   </div>
 </template>
 
 <script setup>
-import axios from "axios";
-import { ref } from "vue";
+import { onMounted } from "vue";
+import { useAuthStore } from "@/stores/auth";
 
-const msg = ref([]);
+const authStore = useAuthStore();
 
-const path = "http://localhost:5000/api/users";
-axios
-  .get(path)
-  .then((res) => {
-    msg.value = res.data;
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+onMounted(async () => {
+  if (authStore.user != null) {
+    await authStore.getUser();
+  }
+});
 </script>
 
 <style>

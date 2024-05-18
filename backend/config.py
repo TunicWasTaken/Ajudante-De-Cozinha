@@ -1,5 +1,6 @@
+from datetime import timedelta
 
-class Config():
+class MongoConfig():
     MONGODB_HOST = 'localhost'
     MONGODB_PORT = 27017
     MONGODB_NAME = 'Ajudante_De_Cozinha'
@@ -9,3 +10,8 @@ class Config():
 
 class AppConfig():
     JWT_SECRET_KEY = 'very-secret'
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    JWT_COOKIE_SECURE = False
+    JWT_TOKEN_LOCATION = ['cookies']
+    JWT_COOKIE_CSRF_PROTECT = True

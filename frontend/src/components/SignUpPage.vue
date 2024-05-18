@@ -11,19 +11,13 @@
           <h2>Sign up</h2>
           <form @submit.prevent="createUser()">
             <span class="error_msg" v-if="account_error"
-              >Account with that {{ account_error_value }} already exists!</span
+              >Account with that username already exists!</span
             >
             <input
               type="text"
               placeholder="Username"
               required
               v-model="new_username"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              required
-              v-model="new_email"
             />
             <input
               type="password"
@@ -44,33 +38,30 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-const new_username = ref([]);
-const new_email = ref([]);
-const new_password = ref([]);
-const account_error = ref(false);
-const account_error_value = ref([]);
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 const router = useRouter();
+const new_username = ref();
+const new_password = ref();
+const account_error = ref(false);
 
 function createUser() {
-  const path = "http://localhost:5000/api/create_user";
-
   axios
-    .post(path, {
+    .post("http://localhost:5000/api/create_user", {
       username: new_username.value,
-      email: new_email.value,
       password: new_password.value,
     })
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .then(async (res) => {
+    .then(async () => {
+      // Get Token and save user's data in store
+      await authStore.loginUser(new_username.value, new_password.value);
+      await authStore.getUser();
+
+      // Redirect to Home Page
       await router.push("/");
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.data == "username") {
-          account_error_value.value = "username";
-        } else {
-          account_error_value.value = "email";
-        }
+      if (err.response.status == 401) {
         account_error.value = true;
       } else {
         console.log(err);
@@ -122,6 +113,7 @@ function createUser() {
   font-size: 15px;
   color: lightcoral;
 }
+
 form {
   display: flex;
   justify-content: center;

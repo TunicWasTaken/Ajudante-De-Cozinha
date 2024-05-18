@@ -1,6 +1,4 @@
-<template>
-  <router-view />
-</template>
+<template><router-view></router-view></template>
 
 <style>
 #app {

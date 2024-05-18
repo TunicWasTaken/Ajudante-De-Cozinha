@@ -10,11 +10,14 @@
         <div class="login">
           <h2>Login</h2>
           <form @submit.prevent="loginUser()">
+            <span class="error_msg" v-if="account_error"
+              >User with that username and password does not exist!</span
+            >
             <input
-              type="email"
-              placeholder="Username/Email"
+              type="text"
+              placeholder="Username"
               required
-              v-model="email"
+              v-model="username"
             />
             <input
               type="password"
@@ -32,13 +35,37 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { ref } from "vue";
-const email = ref([]);
-const password = ref([]);
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
+const router = useRouter();
+const username = ref();
+const password = ref();
+const account_error = ref(false);
 
 function loginUser() {
-  console.log(email.value);
-  console.log(password.value);
+  axios
+    .post("http://localhost:5000/api/login", {
+      username: username.value,
+      password: password.value,
+    })
+    .then(async () => {
+      // Get user data since Token was already obtained
+      await authStore.getUser();
+
+      // Redirect to Home Page
+      await router.push("/");
+    })
+    .catch((err) => {
+      if (err.response.status == 401) {
+        account_error.value = true;
+      } else {
+        console.log(err);
+      }
+    });
 }
 </script>
 
@@ -74,6 +101,16 @@ function loginUser() {
   align-items: center;
   padding: 10px;
   color: dodgerblue;
+}
+
+.error_msg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 65%;
+  font-size: 15px;
+  color: lightcoral;
 }
 
 form {
