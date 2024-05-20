@@ -54,6 +54,7 @@ function loginUser() {
     })
     .then(async () => {
       // Get user data since Token was already obtained
+      await authStore.loginUser(username.value, password.value);
       await authStore.getUser();
 
       // Redirect to Home Page

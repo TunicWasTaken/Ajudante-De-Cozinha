@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="wrapper">
     <div class="topnav">
-      <a class="Home" href="/">Página Inicial</a>
-      <a class="login" href="/login">Login</a>
+      <router-link class="Home" to="/">Home</router-link>
+      <router-link class="login" to="/login">Login</router-link>
     </div>
     <div class="Form">
       <form>
@@ -23,12 +23,12 @@
         id="Description2"
       ></textarea>
       <div id="typeFood">Tipo de prato:</div>
-      <input type="checkbox" id="Carne" value="Carne" v-model="typePicked" />
-      <label for="Carne" id="CarneName">Carne</label>
-      <input type="checkbox" id="Peixe" value="Peixe" v-model="typePicked" />
-      <label for="Peixe" id="PeixeName">Peixe</label>
-      <input type="checkbox" id="Vegan" value="Vegan" v-model="typePicked" />
-      <label for="Vegan" id="VeganName">Vegan</label>
+      <select v-model="typePicked" id="FoodTypeOption">
+        <option disabled value="">Por favor selecione uma</option>
+        <option>Carne</option>
+        <option>Peixe</option>
+        <option>Vegan</option>
+      </select>
       <div>
         <label for="duration" id="Duration">Duração Total:</label>
         <input
@@ -83,6 +83,18 @@
           type="text"
           placeholder="Quantidade..."
         />
+        <select v-model="measurePicked" id="measureOption">
+          <option disabled value="">Por favor selecione uma</option>
+          <option>Unidades</option>
+          <option>Dose</option>
+          <option>Chávena</option>
+          <option>Colher de Sopa</option>
+          <option>Colher de chá</option>
+          <option>a gosto</option>
+          <option>mg</option>
+          <option>ml</option>
+          <option>g</option>
+        </select>
         <button
           type="button"
           id="IngredienteButton"
@@ -91,7 +103,37 @@
           Adicionar Ingrediente
         </button>
       </div>
-      <input type="submit" value="Enviar" id="EnviarButton" />
+      <div
+        id="IngredienteText"
+        v-for="(ingrediente, index) in ingredientesList"
+        :key="index"
+      >
+        {{
+          ingrediente.nome.length > 20
+            ? ingrediente.nome.slice(0, 20) + "..."
+            : ingrediente.nome
+        }}
+        :
+        {{
+          ingrediente.nome.length > 10
+            ? ingrediente.nome.slice(0, 10) + "..."
+            : ingrediente.nome
+        }}
+        {{ ingrediente.medida }}
+        <img
+          src="../assets/5016735.png"
+          width="5%"
+          v-on:click="RemoverIngrediente(ingrediente.nome)"
+        />
+      </div>
+      <div v-if="erro" class="alert">
+        <span
+          class="closebtn"
+          onclick="this.parentElement.style.display='none';"
+          >&times;</span
+        >
+        Por favor preencha corretamente todos os campos do ingrediente.
+      </div>
     </form>
   </div>
   <span id="Passos">Passos:</span>
@@ -104,6 +146,27 @@
   <button type="button" id="PassoButton" v-on:click="AdicionarPasso()">
     Adicionar Passo {{ stepCount }}
   </button>
+  <div id="StepCount" v-for="{ step, stepCount } in steps" :key="step.id">
+    Passo {{ stepCount }} :
+    {{ step.length > 20 ? step.slice(0, 20) + "..." : step }}
+    <img
+      src="../assets/5016735.png"
+      width="5%"
+      v-on:click="RemoverPasso(stepCount)"
+    />
+  </div>
+  <span id="AddImage">Adicionar Imagem de Capa:</span>
+  <input
+    id="uploadButton"
+    type="file"
+    name="file"
+    accept="image/*"
+    @change="onFileChange"
+  />
+  <div class="image" v-if="file">
+    <img :src="imageData[0].url" id="imagem" width="10%" />
+  </div>
+  <button id="EnviarButton" type="submit">Adicionar Receita</button>
 </template>
 
 <script setup>
@@ -120,8 +183,15 @@ const quantidade = ref("");
 const ingredientesList = ref([]);
 const step = ref("");
 const steps = ref([]);
-const msg = ref([]);
 const stepCount = ref(1);
+const measurePicked = ref("");
+
+const erro = ref(false);
+
+const file = ref(null);
+const imageData = ref([]);
+
+const msg = ref([]);
 
 const path = "http://localhost:5000/api/users";
 axios
@@ -134,30 +204,78 @@ axios
   });
 
 function AdicionarIngrediente() {
-  console.log("Ingrediente adicionado:", ingrediente.value, quantidade.value);
-  ingredientesList.value.push({
-    nome: ingrediente.value,
-    quantidade: quantidade.value,
-  });
-  ingrediente.value = "";
-  quantidade.value = "";
+  console.log(
+    "Ingrediente adicionado:",
+    ingrediente.value,
+    quantidade.value,
+    measurePicked.value
+  );
+  if (
+    ingrediente.value != "" &&
+    quantidade.value != "" &&
+    measurePicked.value != ""
+  ) {
+    ingredientesList.value.push({
+      nome: ingrediente.value,
+      quantidade: quantidade.value,
+      medida: measurePicked.value,
+    });
+    ingrediente.value = "";
+    quantidade.value = "";
+    measurePicked.value = "";
+  } else {
+    erro.value = true;
+  }
+  setTimeout(() => {
+    this.erro = false;
+  }, 6000); // Alerta desaparecerá após 6 segundos
+}
+
+function RemoverIngrediente(nomeIngrediente) {
+  ingredientesList.value = ingredientesList.value.filter(
+    (ingrediente) => ingrediente.nome !== nomeIngrediente
+  );
 }
 
 function AdicionarPasso() {
-  console.log("Ingrediente adicionado:", ingrediente.value, quantidade.value);
+  console.log("Passo adicionado:", step.value, stepCount.value);
   if (step.value != "") {
     steps.value.push({
       step: step.value,
+      stepCount: stepCount.value,
     });
     step.value = "";
     stepCount.value += 1;
   }
 }
+
+function RemoverPasso(index) {
+  this.steps.splice(index - 1, 1);
+  // Recontar os steps após a remoção
+  steps.value.forEach((stepObj, i) => {
+    stepObj.stepCount = i + 1;
+  });
+  this.stepCount = this.steps.length + 1;
+}
+
+function onFileChange(event) {
+  const ficheiro = event.target.files[0];
+  file.value = ficheiro;
+  imageData.value.pop();
+  imageData.value.push({
+    nome: ficheiro.name,
+    url: URL.createObjectURL(ficheiro),
+  });
+  console.log(imageData);
+}
 </script>
 
 <style>
-body {
-  background-color: #eee;
+.wrapper {
+  background-image: url("/src/assets/login-background.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 0%;
 }
 /* Add a black background color to the top navigation */
 .topnav {
@@ -202,6 +320,7 @@ body {
   padding: 1px 5px;
   display: inline-block;
   font-weight: bold;
+  color: black;
 }
 
 #Description {
@@ -209,6 +328,7 @@ body {
   padding: 1px 5px;
   display: inline-block;
   font-weight: bold;
+  color: black;
 }
 
 #Description2 {
@@ -242,74 +362,12 @@ body {
 }
 #typeFood {
   width: 100%;
-  padding: 1px 5px;
-  display: inline-block;
   font-weight: bold;
+  font-size: 20px;
   position: relative;
   top: 15px;
-}
-
-#CarneName {
-  width: 100%;
-  font-weight: bold;
-  font-size: 20px;
-  position: relative;
-  top: 30px;
   left: 3px;
-  border: 2px solid #616161;
-  padding: 10px;
-  margin: 10px;
-}
-
-#Carne {
-  height: 15px;
-  width: 15px;
-  background-color: white;
-  position: relative;
-  top: 30px;
-  left: 3px;
-}
-
-#PeixeName {
-  width: 100%;
-  font-weight: bold;
-  font-size: 20px;
-  position: relative;
-  top: 30px;
-  left: 3px;
-  border: 2px solid #616161;
-  padding: 10px;
-  margin: 10px;
-}
-
-#Peixe {
-  height: 15px;
-  width: 15px;
-  margin-left: 20px;
-  background-color: white;
-  position: relative;
-  top: 30px;
-}
-
-#VeganName {
-  width: 100%;
-  font-weight: bold;
-  font-size: 20px;
-  position: relative;
-  top: 30px;
-  left: 3px;
-  border: 2px solid #616161;
-  padding: 10px;
-  margin: 10px;
-}
-
-#Vegan {
-  height: 15px;
-  width: 15px;
-  margin-left: 20px;
-  background-color: white;
-  position: relative;
-  top: 30px;
+  color: black;
 }
 
 #Duration {
@@ -319,6 +377,7 @@ body {
   position: relative;
   top: 40px;
   left: 3px;
+  color: black;
 }
 
 #durationInput {
@@ -338,8 +397,14 @@ body {
   position: relative;
   top: 80px;
   left: 3px;
+  color: black;
 }
-
+#FoodTypeOption {
+  width: 200px;
+  position: relative;
+  top: 15px;
+  left: 3px;
+}
 #DifficultyOption {
   width: 200px;
   position: relative;
@@ -354,6 +419,7 @@ body {
   position: relative;
   top: 100px;
   left: 3px;
+  color: black;
 }
 
 #PortionOption {
@@ -377,23 +443,35 @@ body {
   font-size: 20px;
   position: relative;
   top: 120px;
+  color: black;
 }
 
 #Ingrediente {
   position: relative;
+  box-sizing: border-box;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: white;
   width: 500px;
   top: 115px;
-  right: 745px;
-  right: 455px;
+  right: 375px;
   font-size: 16px;
+  color: black;
+  font-weight: bold;
 }
 
 #Quantidade {
   width: 500px;
   position: relative;
+  box-sizing: border-box;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: white;
   top: 165px;
-  right: 955px;
+  right: 875px;
   font-size: 16px;
+  color: black;
+  font-weight: bold;
 }
 
 #IngredienteButton {
@@ -406,19 +484,25 @@ body {
   border-color: black;
   position: relative;
   top: 150px;
-  right: 455px;
+  right: 375px;
   font-size: 15px;
 }
 
 #EnviarButton {
+  height: 30px;
+  width: 200px;
   position: relative;
-  top: 500px;
-  right: 915px;
+  top: 200px;
+  right: 300px;
   font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: white;
 }
 #Passos {
   position: relative;
-  top: 120px;
+  top: 150px;
   width: 100%;
   padding: 1px 5px;
   display: inline-block;
@@ -430,7 +514,7 @@ body {
   width: 90%;
   position: relative;
   left: 5px;
-  top: 120px;
+  top: 150px;
   height: 150px;
   padding: 5px 5px;
   box-sizing: border-box;
@@ -451,8 +535,95 @@ body {
   border-width: 3px;
   border-color: black;
   position: relative;
-  top: 125px;
+  top: 155px;
   right: -5px;
   font-size: 15px;
+}
+
+#AddImage {
+  position: relative;
+  top: 170px;
+  width: 100%;
+  padding: 1px 5px;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+#uploadButton {
+  width: 305px;
+  height: 25px;
+  color: black;
+  background-color: #ffffff;
+  font-weight: bold;
+  font-size: 15px;
+  border-radius: 5px;
+  border-width: 3px;
+  border-color: black;
+  position: relative;
+  top: 140px;
+  left: 335px;
+}
+#StepCount {
+  width: 400px;
+  height: 25px;
+  color: black;
+  background-color: #e6dede;
+  font-weight: bold;
+  font-size: 20px;
+  position: relative;
+  border-radius: 5px;
+  border-width: 3px;
+  border-color: black;
+  top: 165px;
+  left: 10px;
+}
+#IngredienteText {
+  width: 500px;
+  height: 25px;
+  color: black;
+  background-color: #e6dede;
+  font-weight: bold;
+  font-size: 20px;
+  position: relative;
+  border-radius: 5px;
+  border-width: 3px;
+  border-color: black;
+  top: 150px;
+  right: 705px;
+}
+.alert {
+  padding: 20px;
+  background-color: #f44336; /* Red */
+  color: white;
+  margin-bottom: 15px;
+  position: relative;
+  top: 150px;
+  right: 690px;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+#imagem {
+  position: relative;
+  top: 150px;
+  left: 10px;
+}
+#measureOption {
+  position: relative;
+  top: 165px;
+  right: 870px;
 }
 </style>

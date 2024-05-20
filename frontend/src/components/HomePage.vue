@@ -1,4 +1,11 @@
 <template>
+  <div class="topnav">
+    <router-link class="Home" to="/">Home</router-link>
+    <router-link class="login" to="/login">Login</router-link>
+    <router-link class="Create Recipe" to="/create-recipe"
+      >Create Recipe</router-link
+    >
+  </div>
   <div v-if="authStore.user">
     <h1>{{ authStore.user.name }}</h1>
   </div>
