@@ -3,6 +3,7 @@ import HomePage from "../components/HomePage.vue";
 import LoginPage from "../components/LoginPage.vue";
 import SignUpPage from "../components/SignUpPage.vue";
 import CreateRecipePage from "../components/CreateRecipePage.vue";
+import MyRecipesPage from "../components/MyRecipesPage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -28,6 +29,12 @@ const routes: Array<RouteRecordRaw> = [
     name: "CreateRecipePage",
     meta: { title: "Create Recipe" },
     component: CreateRecipePage,
+  },
+  {
+    path: "/my-recipes",
+    name: "MyRecipesPage",
+    meta: { title: "My Recipes" },
+    component: MyRecipesPage,
   },
 ];
 
