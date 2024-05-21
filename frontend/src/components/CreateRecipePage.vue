@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div>
     <div class="topnav">
       <router-link class="Home" to="/">Home</router-link>
       <router-link class="login" to="/login">Login</router-link>
@@ -95,6 +95,7 @@
           <option>ml</option>
           <option>g</option>
         </select>
+        <br />
         <button
           type="button"
           id="IngredienteButton"
@@ -143,12 +144,35 @@
     placeholder="Descrição do passo..."
     id="AddPassos"
   ></textarea>
+  <input
+    v-model="stepDuration"
+    type="checkbox"
+    id="stepDuration"
+    @click="stepDurationFunc()"
+  />
+  <label id="stepDurationText"> Passo tem duração </label>
+  <div v-if="stepDuration">
+    <label for="duration" id="DurationOfStep">Duração Total:</label>
+    <input
+      v-model="duration"
+      id="durationInputOfStep"
+      type="time"
+      name="appt-time"
+      value="00:00"
+      required
+    />
+  </div>
   <button type="button" id="PassoButton" v-on:click="AdicionarPasso()">
-    Adicionar Passo {{ stepCount }}
+    Adicionar Passo
   </button>
-  <div id="StepCount" v-for="{ step, stepCount } in steps" :key="step.id">
+  <div
+    id="StepCount"
+    v-for="{ step, stepCount, duracao } in steps"
+    :key="step.id"
+  >
     Passo {{ stepCount }} :
     {{ step.length > 20 ? step.slice(0, 20) + "..." : step }}
+    {{ duracao }}
     <img
       src="../assets/5016735.png"
       width="5%"
@@ -185,6 +209,8 @@ const step = ref("");
 const steps = ref([]);
 const stepCount = ref(1);
 const measurePicked = ref("");
+const stepDuration = ref(false);
+const duration = ref("");
 
 const erro = ref(false);
 
@@ -205,6 +231,10 @@ axios
 
 function isNumeric(value) {
   return !isNaN(parseFloat(value)) && isFinite(value);
+}
+
+function stepDurationFunc() {
+  !stepDuration.value;
 }
 
 function AdicionarIngrediente() {
@@ -277,14 +307,19 @@ function RemoverIngrediente(nomeIngrediente) {
 }
 
 function AdicionarPasso() {
-  console.log("Passo adicionado:", step.value, stepCount.value);
-  if (step.value != "") {
+  console.log("Passo adicionado:", step.value, stepCount.value), duration.value;
+  if (
+    (step.value != "" && !stepDuration.value) ||
+    (step.value != "" && duration.value != "" && stepDuration)
+  ) {
     steps.value.push({
       step: step.value,
       stepCount: stepCount.value,
+      duracao: duration.value,
     });
     step.value = "";
     stepCount.value += 1;
+    duration.value = "";
   }
 }
 
@@ -310,12 +345,6 @@ function onFileChange(event) {
 </script>
 
 <style>
-.wrapper {
-  background-image: url("/src/assets/login-background.png");
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 0%;
-}
 /* Add a black background color to the top navigation */
 .topnav {
   background-color: rgb(0, 0, 0);
@@ -473,7 +502,7 @@ function onFileChange(event) {
   font-weight: bold;
   font-size: 20px;
   position: relative;
-  top: 120px;
+  top: 150px;
 }
 
 #IngredientesText {
@@ -531,7 +560,7 @@ function onFileChange(event) {
   height: 30px;
   width: 200px;
   position: relative;
-  top: 200px;
+  top: 250px;
   right: 300px;
   font-size: 16px;
   box-sizing: border-box;
@@ -574,14 +603,14 @@ function onFileChange(event) {
   border-width: 3px;
   border-color: black;
   position: relative;
-  top: 155px;
+  top: 180px;
   right: -5px;
   font-size: 15px;
 }
 
 #AddImage {
   position: relative;
-  top: 170px;
+  top: 230px;
   width: 100%;
   padding: 1px 5px;
   display: inline-block;
@@ -600,7 +629,7 @@ function onFileChange(event) {
   border-width: 3px;
   border-color: black;
   position: relative;
-  top: 140px;
+  top: 200px;
   left: 335px;
 }
 #StepCount {
@@ -611,10 +640,7 @@ function onFileChange(event) {
   font-weight: bold;
   font-size: 20px;
   position: relative;
-  border-radius: 5px;
-  border-width: 3px;
-  border-color: black;
-  top: 165px;
+  top: 185px;
   left: 10px;
 }
 #IngredienteText {
@@ -637,7 +663,7 @@ function onFileChange(event) {
   color: white;
   margin-bottom: 15px;
   position: relative;
-  top: 150px;
+  top: 100px;
   right: 690px;
 }
 
@@ -663,6 +689,30 @@ function onFileChange(event) {
 #measureOption {
   position: relative;
   top: 165px;
-  right: 870px;
+  right: 865px;
+}
+#stepDuration {
+  position: relative;
+  top: 170px;
+  right: 1717px;
+}
+#stepDurationText {
+  position: relative;
+  top: 171px;
+  right: 1717px;
+}
+#DurationOfStep {
+  position: relative;
+  top: 175px;
+  left: 10px;
+}
+#durationInputOfStep {
+  background-color: white;
+  border-radius: 10%;
+  color: black;
+  padding: 10px 20px;
+  position: relative;
+  top: 175px;
+  left: 10px;
 }
 </style>

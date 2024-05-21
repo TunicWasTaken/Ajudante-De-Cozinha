@@ -1,10 +1,22 @@
 <template>
   <div class="topnav">
     <router-link class="Home" to="/">Home</router-link>
-    <router-link class="login" to="/login">Login</router-link>
-    <router-link class="Create Recipe" to="/create-recipe"
+    <router-link v-if="!authStore.user" class="login" to="/login"
+      >Login</router-link
+    >
+    <router-link
+      v-if="authStore.user"
+      class="logout"
+      to="/"
+      @click="logoutUser()"
+    >
+      Logout
+    </router-link>
+    <router-link v-if="authStore.user" class="Create Recipe" to="/create-recipe"
       >Create Recipe</router-link
-    ><router-link class="MyRecipes" to="/my-recipes">My Recipes</router-link>
+    ><router-link v-if="authStore.user" class="MyRecipes" to="/my-recipes"
+      >My Recipes</router-link
+    >
   </div>
   <div v-if="authStore.user">
     <h1>{{ authStore.user.name }}</h1>
@@ -14,8 +26,20 @@
 <script setup>
 import { onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import axios from "axios";
 
 const authStore = useAuthStore();
+
+function logoutUser() {
+  axios
+    .post("http://127.0.0.1:5000/api/logout", {}, { withCredentials: true })
+    .then(() => {
+      authStore.logoutUser();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
 onMounted(async () => {
   if (authStore.user != null) {
@@ -55,6 +79,14 @@ onMounted(async () => {
 }
 
 .topnav a.login {
+  float: right;
+  background-color: #04bb78;
+  text-align: center;
+  padding: 15px 16px;
+  text-decoration: none;
+  font-size: 18px;
+}
+.topnav a.logout {
   float: right;
   background-color: #04bb78;
   text-align: center;
