@@ -35,7 +35,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
@@ -46,26 +45,20 @@ const new_username = ref();
 const new_password = ref();
 const account_error = ref(false);
 
-function createUser() {
-  axios
-    .post("http://localhost:5000/api/create_user", {
-      username: new_username.value,
-      password: new_password.value,
-    })
+async function createUser() {
+  await authStore
+    .createUser(new_username.value, new_password.value)
     .then(async () => {
-      // Get Token and save user's data in store
-      await authStore.loginUser(new_username.value, new_password.value);
       await authStore.getUser();
 
-      // Redirect to Home Page
       await router.push("/");
     })
     .catch((err) => {
-      if (err.response.status == 401) {
+      if (err.response) {
         account_error.value = true;
-      } else {
-        console.log(err);
       }
+
+      console.log(err);
     });
 }
 </script>

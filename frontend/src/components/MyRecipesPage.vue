@@ -15,22 +15,7 @@
   </div>
 </template>
 
-<script setup>
-import axios from "axios";
-import { ref } from "vue";
-
-const msg = ref([]);
-
-const path = "http://localhost:5000/api/users";
-axios
-  .get(path)
-  .then((res) => {
-    msg.value = res.data;
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-</script>
+<script setup></script>
 
 <style>
 #plus {

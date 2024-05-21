@@ -35,7 +35,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
@@ -46,26 +45,19 @@ const username = ref();
 const password = ref();
 const account_error = ref(false);
 
-function loginUser() {
-  axios
-    .post("http://localhost:5000/api/login", {
-      username: username.value,
-      password: password.value,
-    })
+async function loginUser() {
+  await authStore
+    .loginUser(username.value, password.value)
     .then(async () => {
-      // Get user data since Token was already obtained
-      await authStore.loginUser(username.value, password.value);
       await authStore.getUser();
 
-      // Redirect to Home Page
       await router.push("/");
     })
     .catch((err) => {
-      if (err.response.status == 401) {
+      if (err.response) {
         account_error.value = true;
-      } else {
-        console.log(err);
       }
+      console.log(err);
     });
 }
 </script>
@@ -163,3 +155,4 @@ form button:hover {
   color: white;
 }
 </style>
+async async

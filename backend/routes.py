@@ -12,7 +12,7 @@ from flask_jwt_extended import (create_access_token, create_refresh_token,
 
 users = init_users()
 
-@app.route("/api/create_user", methods=['POST'])
+@app.route("/api/create-user", methods=['POST'])
 def create_user():
 
     data = request.get_json()
@@ -61,7 +61,7 @@ def login():
 
         
 
-@app.route("/api/logout", methods=['POST'])
+@app.route("/api/logout", methods=['GET'])
 @jwt_required()
 def logout():
 

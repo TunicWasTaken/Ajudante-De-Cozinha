@@ -8,7 +8,7 @@
       v-if="authStore.user"
       class="logout"
       to="/"
-      @click="logoutUser()"
+      @click="authStore.logoutUser()"
     >
       Logout
     </router-link>
@@ -20,32 +20,14 @@
   </div>
   <div v-if="authStore.user">
     <h1>{{ authStore.user.name }}</h1>
+    <h1>{{ authStore.user.role }}</h1>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import axios from "axios";
 
 const authStore = useAuthStore();
-
-function logoutUser() {
-  axios
-    .post("http://127.0.0.1:5000/api/logout", {}, { withCredentials: true })
-    .then(() => {
-      authStore.logoutUser();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-onMounted(async () => {
-  if (authStore.user != null) {
-    await authStore.getUser();
-  }
-});
 </script>
 
 <style>

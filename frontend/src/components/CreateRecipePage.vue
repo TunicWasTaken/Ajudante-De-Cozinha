@@ -194,7 +194,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import { ref } from "vue";
 
 const recipeName = ref("");
@@ -216,18 +215,6 @@ const erro = ref(false);
 
 const file = ref(null);
 const imageData = ref([]);
-
-const msg = ref([]);
-
-const path = "http://localhost:5000/api/users";
-axios
-  .get(path)
-  .then((res) => {
-    msg.value = res.data;
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
 function isNumeric(value) {
   return !isNaN(parseFloat(value)) && isFinite(value);
