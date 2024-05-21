@@ -190,11 +190,30 @@
   <div class="image" v-if="file">
     <img :src="imageData[0].url" id="imagem" width="10%" />
   </div>
-  <button id="EnviarButton" type="submit">Adicionar Receita</button>
+  <button id="EnviarButton" @click="postarReceita()">Adicionar Receita</button>
 </template>
 
 <script setup>
+import axios from "axios";
 import { ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const authStore = useAuthStore();
+const receita = ref({
+  //Quando clicar em "Adicionar Receita" coloca todos os elementos nesta constante
+  // e coloca na base de dados onde cliente_id = id
+  cliente: authStore.authUser.name,
+  descricao: "",
+  tipoDePrato: "",
+  duracao: "",
+  dificuldade: "",
+  porcao: "",
+  ingredientes: [],
+  passos: [],
+  imagem: "",
+});
 
 const recipeName = ref("");
 const description = ref("");
@@ -328,6 +347,18 @@ function onFileChange(event) {
     url: URL.createObjectURL(ficheiro),
   });
   console.log(imageData);
+}
+async function postarReceita() {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/receitas",
+      receita.value
+    );
+    console.log("Receita postada com sucesso:", response.data);
+    await router.push("/");
+  } catch (error) {
+    console.error("Erro ao postar a receita:", error);
+  }
 }
 </script>
 
