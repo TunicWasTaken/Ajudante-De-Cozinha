@@ -4,7 +4,7 @@
     <router-link class="login" to="/login">Login</router-link>
     <router-link class="Create Recipe" to="/create-recipe"
       >Create Recipe</router-link
-    >
+    ><router-link class="MyRecipes" to="/my-recipes">My Recipes</router-link>
   </div>
   <div v-if="authStore.user">
     <h1>{{ authStore.user.name }}</h1>
@@ -57,6 +57,14 @@ onMounted(async () => {
 .topnav a.login {
   float: right;
   background-color: #04bb78;
+  text-align: center;
+  padding: 15px 16px;
+  text-decoration: none;
+  font-size: 18px;
+}
+.topnav a.MyRecipes {
+  float: right;
+  background-color: black;
   text-align: center;
   padding: 15px 16px;
   text-decoration: none;

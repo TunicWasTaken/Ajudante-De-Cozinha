@@ -80,17 +80,17 @@
         <input
           v-model="quantidade"
           id="Quantidade"
-          type="text"
+          type="number"
+          min="1"
           placeholder="Quantidade..."
         />
         <select v-model="measurePicked" id="measureOption">
           <option disabled value="">Por favor selecione uma</option>
           <option>Unidades</option>
-          <option>Dose</option>
-          <option>Chávena</option>
-          <option>Colher de Sopa</option>
-          <option>Colher de chá</option>
-          <option>a gosto</option>
+          <option>Doses</option>
+          <option>Chávenas</option>
+          <option>Colheres de Sopa</option>
+          <option>Colheres de chá</option>
           <option>mg</option>
           <option>ml</option>
           <option>g</option>
@@ -115,9 +115,9 @@
         }}
         :
         {{
-          ingrediente.nome.length > 10
-            ? ingrediente.nome.slice(0, 10) + "..."
-            : ingrediente.nome
+          ingrediente.quantidade.length > 10
+            ? ingrediente.quantidade.slice(0, 10) + "..."
+            : ingrediente.quantidade
         }}
         {{ ingrediente.medida }}
         <img
@@ -203,6 +203,10 @@ axios
     console.log(err);
   });
 
+function isNumeric(value) {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+}
+
 function AdicionarIngrediente() {
   console.log(
     "Ingrediente adicionado:",
@@ -212,14 +216,49 @@ function AdicionarIngrediente() {
   );
   if (
     ingrediente.value != "" &&
-    quantidade.value != "" &&
+    (quantidade.value != "" || isNumeric(quantidade.value)) &&
     measurePicked.value != ""
   ) {
-    ingredientesList.value.push({
-      nome: ingrediente.value,
-      quantidade: quantidade.value,
-      medida: measurePicked.value,
-    });
+    if (
+      quantidade.value == 1 &&
+      !(
+        measurePicked.value == "mg" ||
+        measurePicked.value == "g" ||
+        measurePicked.value == "ml" ||
+        measurePicked.value == "Colheres de Sopa" ||
+        measurePicked.value == "Colheres de chá"
+      )
+    ) {
+      ingredientesList.value.push({
+        nome: ingrediente.value,
+        quantidade: quantidade.value,
+        medida: measurePicked.value.slice(0, -1),
+      });
+    } else if (
+      quantidade.value == 1 &&
+      measurePicked.value == "Colheres de Sopa"
+    ) {
+      ingredientesList.value.push({
+        nome: ingrediente.value,
+        quantidade: quantidade.value,
+        medida: "Colher de Sopa",
+      });
+    } else if (
+      quantidade.value == 1 &&
+      measurePicked.value == "Colheres de chá"
+    ) {
+      ingredientesList.value.push({
+        nome: ingrediente.value,
+        quantidade: quantidade.value,
+        medida: "Colher de chá",
+      });
+    } else {
+      ingredientesList.value.push({
+        nome: ingrediente.value,
+        quantidade: quantidade.value,
+        medida: measurePicked.value,
+      });
+    }
     ingrediente.value = "";
     quantidade.value = "";
     measurePicked.value = "";
@@ -452,16 +491,16 @@ function onFileChange(event) {
   border: 1px solid black;
   border-radius: 10px;
   background-color: white;
-  width: 500px;
+  width: 300px;
   top: 115px;
-  right: 375px;
+  right: 575px;
   font-size: 16px;
   color: black;
   font-weight: bold;
 }
 
 #Quantidade {
-  width: 500px;
+  width: 300px;
   position: relative;
   box-sizing: border-box;
   border: 1px solid black;
@@ -484,7 +523,7 @@ function onFileChange(event) {
   border-color: black;
   position: relative;
   top: 150px;
-  right: 375px;
+  right: 575px;
   font-size: 15px;
 }
 
