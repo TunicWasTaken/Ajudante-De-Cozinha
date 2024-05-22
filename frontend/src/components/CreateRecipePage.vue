@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="wrapper">
     <div class="topnav">
       <router-link class="Home" to="/">Home</router-link>
       <router-link class="login" to="/login">Login</router-link>
@@ -136,61 +136,63 @@
         Por favor preencha corretamente todos os campos do ingrediente.
       </div>
     </form>
-  </div>
-  <span id="Passos">Passos:</span>
-  <p style="white-space: pre-line"></p>
-  <textarea
-    v-model="step"
-    placeholder="Descrição do passo..."
-    id="AddPassos"
-  ></textarea>
-  <input
-    v-model="stepDuration"
-    type="checkbox"
-    id="stepDuration"
-    @click="stepDurationFunc()"
-  />
-  <label id="stepDurationText"> Passo tem duração </label>
-  <div v-if="stepDuration">
-    <label for="duration" id="DurationOfStep">Duração Total:</label>
+    <span id="Passos">Passos:</span>
+    <p style="white-space: pre-line"></p>
+    <textarea
+      v-model="step"
+      placeholder="Descrição do passo..."
+      id="AddPassos"
+    ></textarea>
     <input
-      v-model="duration"
-      id="durationInputOfStep"
-      type="time"
-      name="appt-time"
-      value="00:00"
-      required
+      v-model="stepDuration"
+      type="checkbox"
+      id="stepDuration"
+      @click="stepDurationFunc()"
     />
-  </div>
-  <button type="button" id="PassoButton" v-on:click="AdicionarPasso()">
-    Adicionar Passo
-  </button>
-  <div
-    id="StepCount"
-    v-for="{ step, stepCount, duracao } in steps"
-    :key="step.id"
-  >
-    Passo {{ stepCount }} :
-    {{ step.length > 20 ? step.slice(0, 20) + "..." : step }}
-    {{ duracao }}
-    <img
-      src="../assets/5016735.png"
-      width="5%"
-      v-on:click="RemoverPasso(stepCount)"
+    <label id="stepDurationText"> Passo tem duração </label>
+    <div v-if="stepDuration">
+      <label for="duration" id="DurationOfStep">Duração Total:</label>
+      <input
+        v-model="duration"
+        id="durationInputOfStep"
+        type="time"
+        name="appt-time"
+        value="00:00"
+        required
+      />
+    </div>
+    <button type="button" id="PassoButton" v-on:click="AdicionarPasso()">
+      Adicionar Passo
+    </button>
+    <div
+      id="StepCount"
+      v-for="{ step, stepCount, duracao } in steps"
+      :key="step.id"
+    >
+      Passo {{ stepCount }} :
+      {{ step.length > 20 ? step.slice(0, 20) + "..." : step }}
+      {{ duracao }}
+      <img
+        src="../assets/5016735.png"
+        width="5%"
+        v-on:click="RemoverPasso(stepCount)"
+      />
+    </div>
+    <span id="AddImage">Adicionar Imagem de Capa:</span>
+    <input
+      id="uploadButton"
+      type="file"
+      name="file"
+      accept="image/*"
+      @change="onFileChange"
     />
+    <div class="image" v-if="file">
+      <img :src="imageData[0].url" id="imagem" width="10%" />
+    </div>
+    <button id="EnviarButton" @click="postarReceita()">
+      Adicionar Receita
+    </button>
   </div>
-  <span id="AddImage">Adicionar Imagem de Capa:</span>
-  <input
-    id="uploadButton"
-    type="file"
-    name="file"
-    accept="image/*"
-    @change="onFileChange"
-  />
-  <div class="image" v-if="file">
-    <img :src="imageData[0].url" id="imagem" width="10%" />
-  </div>
-  <button id="EnviarButton" @click="postarReceita()">Adicionar Receita</button>
 </template>
 
 <script setup>
@@ -363,7 +365,6 @@ async function postarReceita() {
 </script>
 
 <style>
-/* Add a black background color to the top navigation */
 .topnav {
   background-color: rgb(0, 0, 0);
   overflow: hidden;
@@ -574,18 +575,6 @@ async function postarReceita() {
   font-size: 15px;
 }
 
-#EnviarButton {
-  height: 30px;
-  width: 200px;
-  position: relative;
-  top: 250px;
-  right: 300px;
-  font-size: 16px;
-  box-sizing: border-box;
-  border: 1px solid black;
-  border-radius: 10px;
-  background-color: white;
-}
 #Passos {
   position: relative;
   top: 150px;
@@ -594,6 +583,7 @@ async function postarReceita() {
   display: inline-block;
   font-weight: bold;
   font-size: 25px;
+  color: black;
 }
 
 #AddPassos {
@@ -701,7 +691,7 @@ async function postarReceita() {
 }
 #imagem {
   position: relative;
-  top: 150px;
+  top: 220px;
   left: 10px;
 }
 #measureOption {
@@ -718,6 +708,7 @@ async function postarReceita() {
   position: relative;
   top: 171px;
   right: 1717px;
+  font-weight: bold;
 }
 #DurationOfStep {
   position: relative;
@@ -732,5 +723,18 @@ async function postarReceita() {
   position: relative;
   top: 175px;
   left: 10px;
+}
+
+#EnviarButton {
+  height: 30px;
+  width: 200px;
+  position: relative;
+  top: 240px;
+  right: -5px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: rgb(229, 229, 229);
 }
 </style>
