@@ -143,13 +143,15 @@
       placeholder="Descrição do passo..."
       id="AddPassos"
     ></textarea>
-    <input
-      v-model="stepDuration"
-      type="checkbox"
-      id="stepDuration"
-      @click="stepDurationFunc()"
-    />
-    <label id="stepDurationText"> Passo tem duração </label>
+    <div>
+      <input
+        v-model="stepDuration"
+        type="checkbox"
+        id="stepDuration"
+        @click="stepDurationFunc()"
+      />
+      <label id="stepDurationText"> Passo tem duração </label>
+    </div>
     <div v-if="stepDuration">
       <label for="duration" id="DurationOfStep">Duração Total:</label>
       <input
@@ -178,20 +180,29 @@
         v-on:click="RemoverPasso(stepCount)"
       />
     </div>
-    <span id="AddImage">Adicionar Imagem de Capa:</span>
-    <input
-      id="uploadButton"
-      type="file"
-      name="file"
-      accept="image/*"
-      @change="onFileChange"
-    />
-    <div class="image" v-if="file">
-      <img :src="imageData[0].url" id="imagem" width="10%" />
-    </div>
-    <button id="EnviarButton" @click="postarReceita()">
-      Adicionar Receita
-    </button>
+  </div>
+  <span id="AddImage">Adicionar Imagem de Capa:</span>
+  <input
+    id="uploadButton"
+    type="file"
+    name="file"
+    accept="image/*"
+    @change="onFileChange"
+  />
+  <div class="image" v-if="file">
+    <img :src="imageData[0].url" id="imagemUploded" width="10%" />
+  </div>
+  <button v-if="!file" id="EnviarButton" @click="postarReceita()">
+    Adicionar Receita
+  </button>
+  <button v-if="file" id="EnviarButton2" @click="postarReceita()">
+    Adicionar Receita
+  </button>
+  <div v-if="!isEvertythingWritten" class="alert2">
+    <span class="closebtn2" onclick="this.parentElement.style.display='none';"
+      >&times;</span
+    >
+    Por favor preencha corretamente todos os campos da receita.
   </div>
 </template>
 
@@ -231,6 +242,7 @@ const stepCount = ref(1);
 const measurePicked = ref("");
 const stepDuration = ref(false);
 const duration = ref("");
+const isEvertythingWritten = true;
 
 const erro = ref(false);
 
@@ -352,12 +364,33 @@ function onFileChange(event) {
 }
 async function postarReceita() {
   try {
-    const response = await axios.post(
-      "http://localhost:5000/api/receitas",
-      receita.value
-    );
-    console.log("Receita postada com sucesso:", response.data);
-    await router.push("/");
+    if (
+      file.value == null ||
+      recipeName.value == "" ||
+      description.value == "" ||
+      typePicked.value == [] ||
+      selectedDifficulty.value == "" ||
+      selectedPortion.value == "" ||
+      ingrediente.value == "" ||
+      quantidade.value == "" ||
+      ingredientesList.value == [] ||
+      step.value == "" ||
+      steps.value == [] ||
+      stepCount.value <= 1 ||
+      measurePicked.value == "" ||
+      stepDuration.value == false ||
+      duration.value == ""
+    ) {
+      isEvertythingWritten.value = false;
+    } else {
+      isEvertythingWritten.value = true;
+      const response = await axios.post(
+        "http://localhost:5000/api/receitas",
+        receita.value
+      );
+      console.log("Receita postada com sucesso:", response.data);
+      await router.push("/");
+    }
   } catch (error) {
     console.error("Erro ao postar a receita:", error);
   }
@@ -592,18 +625,16 @@ async function postarReceita() {
   border-radius: 5px;
   border-width: 3px;
   border-color: black;
-  position: relative;
-  top: 180px;
-  right: -5px;
+  margin-left: 10px;
+  margin-top: 10px;
   font-size: 15px;
 }
 
 #AddImage {
-  position: relative;
-  top: 230px;
-  width: 100%;
+  margin-top: 50px;
   padding: 1px 5px;
   display: inline-block;
+  color: black;
   font-weight: bold;
   font-size: 25px;
 }
@@ -618,9 +649,7 @@ async function postarReceita() {
   border-radius: 5px;
   border-width: 3px;
   border-color: black;
-  position: relative;
-  top: 200px;
-  left: 335px;
+  margin-top: 50px;
 }
 #StepCount {
   width: 400px;
@@ -670,30 +699,20 @@ async function postarReceita() {
 .closebtn:hover {
   color: black;
 }
-#imagem {
-  position: relative;
-  top: 220px;
-  left: 10px;
-}
 #measureOption {
   margin-top: 10px;
-  margin-right: 900px;
+  margin-right: 500px;
 }
 #stepDuration {
-  position: relative;
-  top: 170px;
-  right: 1717px;
+  margin-top: 160px;
+  margin-left: 10px;
 }
 #stepDurationText {
-  position: relative;
-  top: 171px;
-  right: 1717px;
+  margin-top: 160px;
   font-weight: bold;
 }
 #DurationOfStep {
-  position: relative;
-  top: 175px;
-  left: 10px;
+  margin-left: 10px;
 }
 #durationInputOfStep {
   background-color: white;
@@ -701,20 +720,56 @@ async function postarReceita() {
   color: black;
   padding: 10px 20px;
   position: relative;
-  top: 175px;
-  left: 10px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
-
+#imagemUploded {
+  width: 20%;
+}
 #EnviarButton {
+  cursor: pointer;
   height: 30px;
   width: 200px;
   position: relative;
-  top: 240px;
-  right: -5px;
+  top: 50px;
+  right: 630px;
   font-size: 16px;
   box-sizing: border-box;
   border: 1px solid black;
   border-radius: 10px;
   background-color: rgb(229, 229, 229);
+}
+#EnviarButton2 {
+  cursor: pointer;
+  margin-left: 8px;
+  height: 30px;
+  width: 200px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: rgb(229, 229, 229);
+}
+
+.alert2 {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn2 {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn2:hover {
+  color: black;
 }
 </style>
