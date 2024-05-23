@@ -5,7 +5,7 @@
         <img src="../assets/logo.png" height="45" />
       </a>
     </div>
-    <div class="container">
+    <div class="containerLogin">
       <div class="box">
         <div class="login">
           <h2>Login</h2>
@@ -74,7 +74,7 @@ async function loginUser() {
   padding: 5px;
 }
 
-.container {
+.containerLogin {
   width: 100%;
   height: calc(100vh - 49px);
   display: flex;

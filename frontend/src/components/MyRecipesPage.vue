@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div>
     <div class="topnav">
       <router-link class="Home" to="/">Home</router-link>
       <router-link class="login" to="/login"> Profile </router-link>
@@ -8,9 +8,7 @@
   <div class="cards-container">
     <router-link class="card" to="/create-recipe">
       <img id="plus" src="../assets/plus.png" width="90%" />
-      <div class="container">
-        <h4><b>Nova Receita</b></h4>
-      </div>
+      <h4><b>Nova Receita</b></h4>
     </router-link>
   </div>
 </template>
@@ -20,6 +18,7 @@
 <style>
 #plus {
   padding: 5%;
+  width: 200px;
 }
 .cards-container {
   display: flex;

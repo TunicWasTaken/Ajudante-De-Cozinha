@@ -1,5 +1,5 @@
 <template>
-  <div id="wrapper">
+  <div>
     <div class="topnav">
       <router-link class="Home" to="/">Home</router-link>
       <router-link class="login" to="/login">Login</router-link>
