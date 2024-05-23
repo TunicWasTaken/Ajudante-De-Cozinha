@@ -15,7 +15,7 @@
           placeholder="Nome da Receita.."
         /><br />
       </form>
-      <span id="Description">Descrição do prato:</span>
+      <h2>Descrição do prato:</h2>
       <p style="white-space: pre-line"></p>
       <textarea
         v-model="description"
@@ -408,21 +408,13 @@ async function postarReceita() {
   display: inline-block;
   font-weight: bold;
   color: black;
-}
-
-#Description {
-  width: 100%;
-  padding: 1px 5px;
-  display: inline-block;
-  font-weight: bold;
-  color: black;
+  margin-bottom: -15px;
 }
 
 #Description2 {
   width: 90%;
-  position: relative;
-  left: 5px;
-  top: 5px;
+  margin-left: 5px;
+  margin-top: 5px;
   height: 150px;
   padding: 5px 5px;
   box-sizing: border-box;
@@ -442,18 +434,16 @@ async function postarReceita() {
   border: 1px solid black;
   border-radius: 4px;
   cursor: pointer;
-  position: relative;
-  bottom: 15px;
-  right: 695px;
+  margin-bottom: 0px;
+  margin-right: 1412px;
   border-radius: 10px;
 }
 #typeFood {
   width: 100%;
   font-weight: bold;
   font-size: 20px;
-  position: relative;
-  top: 15px;
-  left: 3px;
+  margin-top: 15px;
+  margin-left: 3px;
   color: black;
 }
 
