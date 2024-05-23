@@ -424,19 +424,14 @@ async function postarReceita() {
   font-size: 16px;
   resize: none;
 }
-
 #recipename {
   width: 500px;
   background-color: white;
   padding: 15px;
   color: black;
-  margin-right: 20px;
   border: 1px solid black;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 0px;
-  margin-right: 1412px;
   border-radius: 10px;
+  margin-right: 1028px;
 }
 #typeFood {
   width: 100%;
@@ -524,14 +519,13 @@ async function postarReceita() {
 }
 
 #Ingrediente {
-  position: relative;
   box-sizing: border-box;
   border: 1px solid black;
   border-radius: 10px;
   background-color: white;
   width: 300px;
-  top: 115px;
-  right: 575px;
+  margin-top: 115px;
+  margin-right: 765px;
   font-size: 16px;
   color: black;
   font-weight: bold;
@@ -539,13 +533,12 @@ async function postarReceita() {
 
 #Quantidade {
   width: 300px;
-  position: relative;
   box-sizing: border-box;
   border: 1px solid black;
   border-radius: 10px;
   background-color: white;
-  top: 165px;
-  right: 875px;
+  margin-right: 875px;
+  margin-top: 5px;
   font-size: 16px;
   color: black;
   font-weight: bold;
@@ -553,15 +546,14 @@ async function postarReceita() {
 
 #IngredienteButton {
   width: 250px;
+  margin-top: 5px;
+  margin-bottom: -130px;
   color: black;
   background-color: #00ff2b;
   font-weight: bold;
   border-radius: 10px;
   border-width: 2px;
   border-color: black;
-  position: relative;
-  top: 150px;
-  right: 575px;
   font-size: 15px;
 }
 
@@ -659,10 +651,9 @@ async function postarReceita() {
   padding: 20px;
   background-color: #f44336; /* Red */
   color: white;
-  margin-bottom: 15px;
-  position: relative;
-  top: 100px;
-  right: 690px;
+  margin-top: 130px;
+  margin-right: 1000px;
+  margin-bottom: -150px;
 }
 
 .closebtn {
@@ -685,9 +676,8 @@ async function postarReceita() {
   left: 10px;
 }
 #measureOption {
-  position: relative;
-  top: 165px;
-  right: 865px;
+  margin-top: 10px;
+  margin-right: 900px;
 }
 #stepDuration {
   position: relative;

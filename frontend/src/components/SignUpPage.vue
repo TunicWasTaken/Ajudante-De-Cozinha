@@ -5,7 +5,7 @@
         <img src="../assets/logo.png" height="45" />
       </a>
     </div>
-    <div class="container">
+    <div class="containerRegister">
       <div class="box">
         <div class="login">
           <h2>Sign up</h2>
@@ -75,7 +75,7 @@ async function createUser() {
   padding: 5px;
 }
 
-.container {
+.containerRegister {
   width: 100%;
   height: calc(100vh - 49px);
   display: flex;
