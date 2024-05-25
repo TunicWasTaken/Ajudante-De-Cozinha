@@ -354,7 +354,7 @@ function RemoverPasso(index) {
 
 function onFileChange(event) {
   const ficheiro = event.target.files[0];
-  file.value = ficheiro;
+  file.value = getBase64(ficheiro);
   imageData.value.pop();
   imageData.value.push({
     nome: ficheiro.name,
@@ -362,6 +362,18 @@ function onFileChange(event) {
   });
   console.log(imageData);
 }
+
+function getBase64(file) {
+  var reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = function () {
+    console.log(reader.result);
+  };
+  reader.onerror = function (error) {
+    console.log("Error: ", error);
+  };
+}
+
 async function postarReceita() {
   try {
     if (
@@ -371,21 +383,14 @@ async function postarReceita() {
       typePicked.value == [] ||
       selectedDifficulty.value == "" ||
       selectedPortion.value == "" ||
-      ingrediente.value == "" ||
-      quantidade.value == "" ||
       ingredientesList.value == [] ||
-      step.value == "" ||
-      steps.value == [] ||
-      stepCount.value <= 1 ||
-      measurePicked.value == "" ||
-      stepDuration.value == false ||
-      duration.value == ""
+      steps.value == []
     ) {
       isEvertythingWritten.value = false;
     } else {
       isEvertythingWritten.value = true;
       const response = await axios.post(
-        "http://localhost:5000/api/receitas",
+        "http://localhost:5000/api/create-recipe",
         receita.value
       );
       console.log("Receita postada com sucesso:", response.data);

@@ -2,7 +2,7 @@
   <div>
     <div class="topnav">
       <router-link class="Home" to="/">Home</router-link>
-      <router-link class="login" to="/login"> Profile </router-link>
+      <router-link class="login" to="/my-recipes"> Profile </router-link>
     </div>
   </div>
   <div class="cards-container">
