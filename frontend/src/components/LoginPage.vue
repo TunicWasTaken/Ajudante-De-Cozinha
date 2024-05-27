@@ -1,9 +1,9 @@
 <template>
   <div class="wrapper">
     <div class="logo">
-      <a href="/">
+      <router-link to="/">
         <img src="../assets/logo.png" height="45" />
-      </a>
+      </router-link>
     </div>
     <div class="containerLogin">
       <div class="box">

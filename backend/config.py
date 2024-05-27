@@ -11,7 +11,5 @@ class MongoConfig():
 class AppConfig():
     JWT_SECRET_KEY = 'very-secret'
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     JWT_COOKIE_SECURE = False
     JWT_TOKEN_LOCATION = ['cookies']
-    JWT_COOKIE_CSRF_PROTECT = True

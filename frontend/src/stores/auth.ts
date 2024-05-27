@@ -31,6 +31,10 @@ export const useAuthStore = defineStore("auth", {
           },
           { withCredentials: true }
         )
+        .then(() => {
+          axios.defaults.headers.common["X-CSRF-TOKEN"] =
+            document.cookie.split("=")[1];
+        })
         .catch((err) => {
           throw err;
         });
@@ -50,6 +54,22 @@ export const useAuthStore = defineStore("auth", {
         })
         .then(() => {
           this.authUser = null;
+          axios.defaults.headers.common["X-CSRF-TOKEN"] = null;
+        })
+        .catch((err) => {
+          if (err.response.data.msg == "Token has expirer") {
+            this.authUser = null;
+          }
+        });
+    },
+
+    async createRecipe(recipe: unknown) {
+      await axios
+        .post("http://localhost:5000/api/recipe", recipe, {
+          withCredentials: true,
+        })
+        .then(async () => {
+          console.log("Receita criada com sucesso");
         })
         .catch((err) => {
           throw err;

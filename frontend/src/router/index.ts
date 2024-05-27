@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomePage from "../components/HomePage.vue";
 import LoginPage from "../components/LoginPage.vue";
 import SignUpPage from "../components/SignUpPage.vue";
-import CreateRecipePage from "../components/CreateRecipePage.vue";
+import CreateRecipePage from "@/components/CreateRecipePage.vue";
 import MyRecipesPage from "../components/MyRecipesPage.vue";
 import ReceitaPage from "../components/ReceitaPage.vue";
 
