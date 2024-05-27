@@ -1,4 +1,5 @@
-from __main__ import app, users, recipes
+from __main__ import app
+from db import init_users, init_recipes
 from models import User, Recipe
 from hashlib import sha256
 from flask import jsonify, request
@@ -6,6 +7,9 @@ from datetime import datetime, timedelta, timezone
 from flask_jwt_extended import (create_access_token, get_jwt_identity, jwt_required, 
                                 unset_jwt_cookies, set_access_cookies, get_jwt)
 
+
+users = init_users()
+recipes = init_recipes()
 
 @app.route("/api/create-user", methods=['POST'])
 def create_user():
