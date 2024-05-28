@@ -1,19 +1,45 @@
 <template>
   <div>
-    <div class="topnav">
-      <router-link class="Home" to="/">Home</router-link>
-      <router-link class="login" to="/my-recipes"> Profile </router-link>
+    <div class="logo">
+      <router-link to="/">
+        <img src="../assets/logo.png" height="45" />
+      </router-link>
     </div>
-  </div>
-  <div class="cards-container">
-    <router-link class="card" to="/create-recipe">
-      <img id="plus" src="../assets/plus.png" width="90%" />
-      <h4><b>Nova Receita</b></h4>
-    </router-link>
+    <div class="recipe-container">
+      <router-link
+        class="recipe-card"
+        v-for="recipe in recipeList"
+        :key="recipe._id"
+        :to="'/recipes/' + recipe._id"
+      >
+        <img id="recipe-img" :src="recipe.img" />
+        <h2>
+          <b>{{ recipe.name }}</b>
+        </h2>
+      </router-link>
+      <router-link class="card" to="/create-recipe">
+        <img id="plus" src="../assets/plus.png" width="90%" />
+        <h4><b>Nova Receita</b></h4>
+      </router-link>
+    </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+import axios from "axios";
+
+const recipeList = ref([]);
+
+axios
+  .get("http://localhost:5000/api/recipe", { withCredentials: true })
+  .then((res) => {
+    recipeList.value = res.data.recipes;
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+</script>
 
 <style>
 #plus {

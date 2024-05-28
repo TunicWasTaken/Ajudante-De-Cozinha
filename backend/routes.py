@@ -1,4 +1,6 @@
 from __main__ import app
+from bson import ObjectId
+from pymongo import ReturnDocument
 from db import init_users, init_recipes
 from models import User, Recipe
 from hashlib import sha256
@@ -117,3 +119,23 @@ def handle_recipe():
         _id = str(recipe.add_recipe())
 
         return jsonify({'msg': 'Recipe create successfully', '_id': _id}), 201
+    
+    else:
+
+        username = get_jwt_identity()
+
+        recipe_list = list(recipes.find({'user': username}))
+    
+        for recipe in recipe_list:
+            recipe["_id"] = str(recipe["_id"])
+
+        return jsonify({'recipes': recipe_list}), 201
+    
+
+@app.route("/api/recipe/<id>", methods=['GET'])
+def get_recipe(id):
+
+    recipe = dict(recipes.find_one_and_update({'_id': ObjectId(id)}, {'$inc': {'views': 1}}, return_document=ReturnDocument.AFTER))
+    del recipe["_id"]
+
+    return jsonify({'recipe': recipe}), 201

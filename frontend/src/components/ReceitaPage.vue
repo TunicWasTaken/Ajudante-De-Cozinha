@@ -1,35 +1,36 @@
 <template>
-  <div id="wrapper">
-    <div class="topnav">
-      <router-link class="Home" to="/">Home</router-link>
-      <router-link class="login" to="/login">Login</router-link>
+  <div>
+    <div class="logo">
+      <router-link to="/">
+        <img src="../assets/logo.png" height="45" />
+      </router-link>
     </div>
+    {{ recipe }}
   </div>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Francesinha</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <h1 id="Title">Wide Pedro</h1>
-    <div class="info">
-      <div class="info-item"><span class="icon">⏱️</span> 20 min</div>
-      <div class="info-item"><span class="icon">📊</span> Média</div>
-      <div class="info-item"><span class="icon">🍽️</span> 12 pessoas</div>
-    </div>
-    <img id="imagem" src="../assets/pedro.jpg" />
-  </body>
-  <h2 id="Description">Descrição:</h2>
-  <div class="DescriptionText">{{ description }}</div>
-  <h2 id="IngredientesTitle">Ingredientes:</h2>
-  <div class="DescriptionText">{{ description }}</div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
 
-const description = ref("Wide Pedro");
+const route = useRoute();
+const router = useRouter();
+const recipe = ref({});
+const recipe_id = route.params.id;
+
+axios
+  .get("http://localhost:5000/api/recipe/" + recipe_id, {
+    withCredentials: true,
+  })
+  .then((res) => {
+    recipe.value = res.data.recipe;
+    document.title = res.data.recipe.name;
+  })
+  .catch((err) => {
+    console.log(err);
+    router.push("/");
+  });
 </script>
 
 <style>

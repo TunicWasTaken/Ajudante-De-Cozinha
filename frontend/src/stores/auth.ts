@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
+axios.defaults.headers.common["X-CSRF-TOKEN"] = document.cookie.split("=")[1];
+
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     authUser: null,
@@ -57,22 +59,9 @@ export const useAuthStore = defineStore("auth", {
           axios.defaults.headers.common["X-CSRF-TOKEN"] = null;
         })
         .catch((err) => {
-          if (err.response.data.msg == "Token has expirer") {
-            this.authUser = null;
-          }
-        });
-    },
-
-    async createRecipe(recipe: unknown) {
-      await axios
-        .post("http://localhost:5000/api/recipe", recipe, {
-          withCredentials: true,
-        })
-        .then(async () => {
-          console.log("Receita criada com sucesso");
-        })
-        .catch((err) => {
-          throw err;
+          this.authUser = null;
+          axios.defaults.headers.common["X-CSRF-TOKEN"] = null;
+          console.log(err);
         });
     },
   },

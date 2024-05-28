@@ -45,6 +45,7 @@ class Recipe(object):
         self.difficulty = difficulty
         self.ingredients = ingredients
         self.steps = steps
+        self.views = 0
 
 
     def add_recipe(self):
@@ -61,5 +62,6 @@ class Recipe(object):
             "portion": self.portion,
             "difficulty": self.difficulty,
             "ingredients": self.ingredients,
-            "steps": self.steps
+            "steps": self.steps,
+            "views": self.views
         }

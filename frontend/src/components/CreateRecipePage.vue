@@ -160,6 +160,7 @@
 
 <script setup>
 import { ref } from "vue";
+import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 
@@ -265,10 +266,12 @@ async function submitRecipe() {
     steps: stepList.value,
   };
 
-  await authStore
-    .createRecipe(recipe)
-    .then(() => {
-      router.push("/");
+  await axios
+    .post("http://localhost:5000/api/recipe", recipe, {
+      withCredentials: true,
+    })
+    .then(async (res) => {
+      router.push("/recipes/" + res.data._id);
     })
     .catch((err) => {
       console.log(err);

@@ -38,7 +38,7 @@ const routes: Array<RouteRecordRaw> = [
     component: MyRecipesPage,
   },
   {
-    path: "/receita",
+    path: "/recipes/:id",
     name: "ReceitaPage",
     meta: { title: "ReceitaPage" },
     component: ReceitaPage,
