@@ -139,3 +139,47 @@ def get_recipe(id):
     del recipe["_id"]
 
     return jsonify({'recipe': recipe}), 201
+
+
+def sort_by_views(recipe):
+    return recipe["views"]
+
+@app.route("/api/recipes/homepage", methods=['GET'])
+def homepage():
+
+    recipe_list_top5 = list(recipes.find().limit(5))
+    
+    recipe_list_top5.sort(key=sort_by_views, reverse=True)
+    
+    for recipe in recipe_list_top5:
+        recipe["_id"] = str(recipe["_id"])
+
+    
+    recipe_list_new = list(recipes.find().sort({'_id': -1}).limit(6))
+
+    for recipe in recipe_list_new:
+        recipe["_id"] = str(recipe["_id"])
+
+    return jsonify({'top5': [recipe for recipe in recipe_list_top5], 'new': [recipe for recipe in recipe_list_new]}), 201
+
+
+@app.route("/api/recipes", methods=['GET'])
+def search_recipe():
+    
+    params = request.query_string.decode()
+    query = {}
+
+    for param in params.split('&'):
+        key, value = param.split("=")
+
+        if key == 'q':
+            key = 'name'
+
+        query[key] = value
+
+    recipe_list = list(recipes.find(query))
+
+    for recipe in recipe_list:
+        recipe["_id"] = str(recipe["_id"])
+
+    return jsonify({'recipes': recipe_list}), 201

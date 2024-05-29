@@ -58,7 +58,7 @@ export const useAuthStore = defineStore("auth", {
           this.authUser = null;
           axios.defaults.headers.common["X-CSRF-TOKEN"] = null;
         })
-        .catch((err) => {
+        .catch(async (err) => {
           this.authUser = null;
           axios.defaults.headers.common["X-CSRF-TOKEN"] = null;
           console.log(err);
