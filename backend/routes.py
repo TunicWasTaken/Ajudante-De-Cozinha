@@ -147,7 +147,7 @@ def sort_by_views(recipe):
 @app.route("/api/recipes/homepage", methods=['GET'])
 def homepage():
 
-    recipe_list_top5 = list(recipes.find().limit(5))
+    recipe_list_top5 = list(recipes.find().limit(8))
     
     recipe_list_top5.sort(key=sort_by_views, reverse=True)
     
@@ -155,7 +155,7 @@ def homepage():
         recipe["_id"] = str(recipe["_id"])
 
     
-    recipe_list_new = list(recipes.find().sort({'_id': -1}).limit(6))
+    recipe_list_new = list(recipes.find().sort({'_id': -1}).limit(14))
 
     for recipe in recipe_list_new:
         recipe["_id"] = str(recipe["_id"])
@@ -183,3 +183,22 @@ def search_recipe():
         recipe["_id"] = str(recipe["_id"])
 
     return jsonify({'recipes': recipe_list}), 201
+
+
+
+@app.route("/api/recipe/delete/<id>", methods=['DELETE'])
+@jwt_required()
+def delete_recipe(id):
+
+    username = get_jwt_identity()
+    role = users.find_one({'name': username})['role']
+    recipe = dict(recipes.find_one({'_id': ObjectId(id)}))
+
+    if not recipe:
+        return jsonify({'msg': 'Recipe not found'}), 404
+
+    if recipe['user'] != username or role != "admin":
+        return jsonify({'msg': 'Unauthorized'}), 401
+    
+    recipes.delete_one({'_id': ObjectId(id)})
+    return jsonify({'msg': 'Recipe deleted'}), 201

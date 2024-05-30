@@ -1,20 +1,29 @@
 <template>
-  <div>
-    <div class="recipe-container">
+  <div class="container">
+    <div class="cards-container">
       <router-link
-        class="recipe-card"
+        class="card"
         v-for="recipe in recipeList"
         :key="recipe._id"
         :to="'/recipes/' + recipe._id"
       >
-        <img id="recipe-img" :src="recipe.img" />
-        <h2>
-          <b>{{ recipe.name }}</b>
-        </h2>
-      </router-link>
-      <router-link class="card" to="/create-recipe">
-        <img id="plus" src="../assets/plus.png" width="90%" />
-        <h4><b>Nova Receita</b></h4>
+        <div class="img-container">
+          <img class="img" :src="recipe.img" />
+        </div>
+        <div class="info-container">
+          <h3 class="title">{{ recipe.name }}</h3>
+          <h4 class="diff">
+            {{
+              difficulties.filter((diff) => diff.value === recipe.difficulty)[0]
+                .text
+            }}
+          </h4>
+          <h4 class="time">
+            {{ Math.floor(recipe.time / 60 / 60) }} Hr
+            {{ recipe.time / 60 - Math.floor(recipe.time / 60 / 60) * 60 }}
+            Min
+          </h4>
+        </div>
       </router-link>
     </div>
   </div>
@@ -25,6 +34,11 @@ import { ref } from "vue";
 import axios from "axios";
 
 const recipeList = ref([]);
+const difficulties = ref([
+  { text: "Fácil", value: "F" },
+  { text: "Médio", value: "M" },
+  { text: "Díficil", value: "D" },
+]);
 
 axios
   .get("http://localhost:5000/api/recipe", { withCredentials: true })
@@ -37,48 +51,63 @@ axios
 </script>
 
 <style>
-#plus {
-  padding: 5%;
-  width: 200px;
-}
-.cards-container {
+.container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 110px;
+  justify-content: center;
+  height: calc(100vh - 59px);
+  display: block;
+  padding: 15px;
 }
-.card {
-  box-sizing: border-box;
-  width: 370px;
-  height: 454px;
-  background: rgba(217, 217, 217, 0.58);
-  border: 1px solid white;
-  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(6px);
-  border-radius: 17px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.5s;
+
+.card-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  user-select: none;
-  font-weight: bolder;
-  color: black;
-  position: relative;
-  left: 50px;
-  top: 50px;
 }
 
-.card:hover {
-  border: 1px solid black;
-  transform: scale(1.05);
+.card {
+  margin-top: 75px;
+  height: 250%;
+  padding: 0px 20px;
+  text-decoration: none;
+  transform: scale(1.2);
+  transition: transform 0.2s ease-in-out;
 }
 
-.card:active {
-  transform: scale(0.95) rotateZ(1.7deg);
+.img-container {
+  overflow: auto;
+  border-style: solid;
+  border-radius: 5px 5px 0px 0px;
+  border-color: rgb(0, 0, 0);
+  padding: 3px 3px;
+  height: 45%;
+  width: 100%;
 }
 
-.container {
-  padding: 2px 16px;
+.info-container {
+  height: 55%;
+  padding: 5px 5px;
+  display: block;
+  text-align: left;
+  border-style: solid;
+  border-radius: 0px 0px 5px 5px;
+  border-color: rgb(0, 0, 0);
+  background-color: rgb(86, 253, 170);
+}
+
+.popular-card:hover {
+  transform: scale(1.3);
+}
+
+.info-container h3 {
+  color: rgb(0, 0, 0);
+  font-size: 25px;
+  padding: 5px 0px 15px;
+}
+
+.info-container h4 {
+  color: rgb(0, 0, 0);
+  font-size: 15px;
+  padding-bottom: 5px;
 }
 </style>

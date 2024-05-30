@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="logo">
       <router-link to="/">
-        <img src="../assets/logo.png" height="45" />
+        <img src="../assets/logo.png" height="75" />
       </router-link>
     </div>
     <div class="containerLogin">
@@ -76,7 +76,7 @@ async function loginUser() {
 
 .containerLogin {
   width: 100%;
-  height: calc(100vh - 49px);
+  height: calc(100vh - 79px);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -3,37 +3,65 @@
     class="topnav"
     v-if="$route.path != '/login' && $route.path != '/sign-up'"
   >
-    <router-link class="Home" to="/">Home</router-link>
+    <router-link class="home" to="/"
+      ><img src="../src/assets/logo.png" height="45"
+    /></router-link>
+    <div class="search-container">
+      <form class="search-content" @submit.prevent="search()">
+        <input
+          id="search-bar"
+          type="text"
+          v-model="query"
+          placeholder="Pesquisar.."
+        />
+      </form>
+    </div>
     <router-link v-if="!authStore.user" class="login" to="/login"
       >Login</router-link
     >
-    <router-link
-      v-if="authStore.user"
-      class="logout"
-      to="/"
-      @click="authStore.logoutUser()"
-    >
-      Logout
-    </router-link>
-    <router-link
-      v-if="authStore.user && $route.path != '/create-recipe'"
-      class="Create Recipe"
-      to="/create-recipe"
-      >Create Recipe</router-link
-    ><router-link
-      v-if="authStore.user && $route.path != '/my-recipes'"
-      class="MyRecipes"
-      to="/my-recipes"
-      >My Recipes</router-link
-    >
+    <div class="logged-in-container" v-if="authStore.user">
+      <img id="user-logo" src="../src/assets/user_icon.png" height="30" />
+      <div class="dropdown-container">
+        <div class="dropdown-content">
+          <router-link
+            v-if="authStore.user && $route.path != '/create-recipe'"
+            class="create-recipe"
+            to="/create-recipe"
+            >Create Recipe</router-link
+          ><br /><router-link
+            v-if="authStore.user && $route.path != '/my-recipes'"
+            class="my-recipes"
+            to="/my-recipes"
+            >My Recipes</router-link
+          ><br />
+          <router-link
+            v-if="authStore.user"
+            class="logout"
+            to="/"
+            @click="authStore.logoutUser()"
+          >
+            Logout
+          </router-link>
+        </div>
+      </div>
+    </div>
   </div>
   <router-view></router-view>
 </template>
 
 <script setup>
 import { useAuthStore } from "@/stores/auth";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
+const router = useRouter();
+
+const query = ref("");
+
+function search() {
+  router.push({ path: "search", query: { q: query.value } });
+}
 </script>
 <style>
 #app {
@@ -49,57 +77,96 @@ const authStore = useAuthStore();
   box-sizing: border-box;
 }
 
-/* Add a black background color to the top navigation */
-.topnav {
-  background-color: rgb(0, 0, 0);
+body {
   overflow: hidden;
 }
 
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
+.topnav {
+  background-color: rgb(0, 0, 0);
+  overflow: hidden;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topnav .home {
+  margin: 5px 5px;
+}
+
+.topnav .login {
+  float: right;
+  text-align: center;
+  padding: 8px 8px;
+  margin: 7px 10px;
+  border-radius: 15px;
+  text-decoration: none;
+  color: rgb(3, 219, 111);
+}
+
+.topnav .login:hover {
+  background-color: rgb(3, 219, 111);
+  color: rgb(255, 255, 255);
+}
+
+.topnav .logged-in-container {
+  float: right;
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+.topnav .dropdown-container {
+  top: 4%;
+  right: -10px;
+  width: 165px;
+  position: absolute;
+  display: none;
+}
+
+.topnav .dropdown-container .dropdown-content {
+  background: rgb(0, 0, 0);
+  padding: 20px;
+  margin: 10px;
+}
+
+.topnav .dropdown-content a {
+  text-decoration: none;
   color: #ffffff;
-  text-align: center;
-  padding: 15px 16px;
-  text-decoration: none;
-  font-size: 18px;
+  font-size: 15px;
 }
 
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #04bb78;
+.topnav .logged-in-container:hover .dropdown-container {
+  display: block;
+  transform-origin: top right;
+  animation: scaleUp 0.2s ease-in-out;
+}
+
+.topnav .dropdown-content a:hover {
+  color: rgb(3, 219, 111);
+  font-weight: 550;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-content #search-bar {
+  background-color: white;
   color: black;
-}
-
-/* Add a color to the active/current link */
-.topnav a.paginainicial {
-  background-color: #04bb78;
-  color: white;
-  font-size: 18px;
-}
-
-.topnav a.login {
-  float: right;
-  background-color: #04bb78;
-  text-align: center;
-  padding: 15px 16px;
-  text-decoration: none;
-  font-size: 18px;
-}
-.topnav a.logout {
-  float: right;
-  background-color: #04bb78;
-  text-align: center;
-  padding: 15px 16px;
-  text-decoration: none;
-  font-size: 18px;
-}
-.topnav a.MyRecipes {
-  float: right;
-  background-color: black;
-  text-align: center;
-  padding: 15px 16px;
-  text-decoration: none;
-  font-size: 18px;
+  font-size: 13px;
+  border-radius: 15px;
+  width: 150%;
 }
 </style>

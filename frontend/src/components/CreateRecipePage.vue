@@ -1,10 +1,5 @@
 <template>
   <div>
-    <div class="logo">
-      <router-link to="/">
-        <img src="../assets/logo.png" height="45" />
-      </router-link>
-    </div>
     <div class="form-container">
       <form class="recipe-form" @submit.prevent="submitRecipe()">
         <input
