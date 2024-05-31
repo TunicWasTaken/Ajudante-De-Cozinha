@@ -41,17 +41,18 @@
         <h2 class="description">{{ recipe.description }}</h2>
         <h1 class="ingredients-title">Ingredientes</h1>
         <div class="ingredients-list">
-          <span
+          <p
             class="ingredient"
             v-for="ingredient in recipe.ingredients"
             :key="ingredient.name"
-            >{{ ingredient.name }}: {{ ingredient.quantity }}
+          >
+            {{ ingredient.name }}: {{ ingredient.quantity }}
             {{
               measures.filter(
                 (measure) => measure.value === ingredient.measure
               )[0].text
-            }}</span
-          >
+            }}
+          </p>
         </div>
         <button class="helper-button" v-on:click="start()">
           Iniciar Ajudante
@@ -67,12 +68,13 @@
         <button class="next-step" @click="next_step()">Próximo Passo</button>
       </div>
       <div class="done-container" v-if="done">
-        A receita terminou =)
+        Receita acabada e bom apetite!
 
         <button
           @click="
             started = false;
             done = false;
+            step_index = 0;
           "
         >
           Voltar
@@ -248,6 +250,7 @@ axios
   margin: 10px 0;
   color: #333;
   font-weight: 400;
+  width: 800px;
   font-size: 16px;
 }
 

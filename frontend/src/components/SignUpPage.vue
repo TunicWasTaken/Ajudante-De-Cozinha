@@ -8,10 +8,10 @@
     <div class="containerRegister">
       <div class="box">
         <div class="login">
-          <h2>Sign up</h2>
+          <h2>Registar</h2>
           <form @submit.prevent="createUser()">
             <span class="error_msg" v-if="account_error"
-              >Account with that username already exists!</span
+              >Usuário com esse nome já existe!</span
             >
             <input
               type="text"
@@ -25,8 +25,8 @@
               required
               v-model="new_password"
             />
-            <p>Already have an account? <a href="/login">Log in</a></p>
-            <button>Submit</button>
+            <p>Já tem conta? <a href="/login">Log in</a></p>
+            <button>Submeter</button>
           </form>
         </div>
       </div>

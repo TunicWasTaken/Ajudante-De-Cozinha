@@ -11,7 +11,7 @@
           <h2>Login</h2>
           <form @submit.prevent="loginUser()">
             <span class="error_msg" v-if="account_error"
-              >User with that username and password does not exist!</span
+              >Usuário com esse nome já existe!</span
             >
             <input
               type="text"
@@ -25,8 +25,8 @@
               required
               v-model="password"
             />
-            <p>Don't have an account? <a href="/sign-up">Sign up</a></p>
-            <button>Submit</button>
+            <p>Não tem conta? <a href="/sign-up">Registar</a></p>
+            <button>Submeter</button>
           </form>
         </div>
       </div>

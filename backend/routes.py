@@ -146,9 +146,7 @@ def sort_by_views(recipe):
 @app.route("/api/recipes/homepage", methods=['GET'])
 def homepage():
 
-    recipe_list_top5 = list(recipes.find().limit(6))
-    
-    recipe_list_top5.sort(key=sort_by_views, reverse=True)
+    recipe_list_top5 = list(recipes.find().sort({'views': -1}).limit(6))
     
     for recipe in recipe_list_top5:
         recipe["_id"] = str(recipe["_id"])
@@ -183,7 +181,7 @@ def search_recipe():
 
     for recipe in recipe_list:
         recipe["_id"] = str(recipe["_id"])
-        if name.lower() in recipe["name"]:
+        if name.lower() in recipe["name"].lower():
             alike_recipes.append(recipe)
 
     return jsonify({'recipes': alike_recipes}), 201

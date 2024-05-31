@@ -129,7 +129,7 @@ axios
 .popular-card {
   margin-top: 75px;
   height: 250%;
-  width: 300px;
+  width: 250px;
   padding: 0px 20px;
   text-decoration: none;
   transform: scale(1.2);
@@ -150,6 +150,7 @@ axios
 
 .new-card {
   height: 150%;
+  width: 200px;
   padding: 0px 5px;
   text-decoration: none;
   transition: transform 0.2s ease-in-out;

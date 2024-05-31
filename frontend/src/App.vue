@@ -27,12 +27,12 @@
             v-if="authStore.user && $route.path != '/create-recipe'"
             class="create-recipe"
             to="/create-recipe"
-            >Create Recipe</router-link
+            >Criar Receita</router-link
           ><br /><router-link
             v-if="authStore.user && $route.path != '/my-recipes'"
             class="my-recipes"
             to="/my-recipes"
-            >My Recipes</router-link
+            >Minhas Receitas</router-link
           ><br />
           <router-link
             v-if="authStore.user"
@@ -116,7 +116,7 @@ function search() {
 .topnav .dropdown-container {
   top: 4%;
   right: -10px;
-  width: 165px;
+  width: 180px;
   position: absolute;
   display: none;
 }
