@@ -54,6 +54,16 @@
             }}
           </p>
         </div>
+        <button
+          class="delete-button"
+          v-on:click="deleteRecipe()"
+          v-if="
+            authStore.user?.role == 'admin' ||
+            authStore.user?.name == recipe.user
+          "
+        >
+          Eliminar
+        </button>
         <button class="helper-button" v-on:click="start()">
           Iniciar Ajudante
         </button>
@@ -66,6 +76,9 @@
           {{ playing ? "⏸️" : "▶️" }}{{ secondsAsString(shownTime) }}
         </button>
         <button class="next-step" @click="next_step()">Próximo Passo</button>
+        <button class="previous-step" @click="previous_step()">
+          Passo Anterior
+        </button>
       </div>
       <div class="done-container" v-if="done">
         Receita acabada e bom apetite!
@@ -88,9 +101,11 @@
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
+import { useAuthStore } from "@/stores/auth";
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
 const recipe = ref({});
 const started = ref(false);
 const step_index = ref(0);
@@ -100,7 +115,7 @@ const recipe_id = route.params.id;
 const types = ref([
   { text: "Carne", value: "C" },
   { text: "Peixe", value: "P" },
-  { text: "Vegan", value: "V" },
+  { text: "Vegetariana", value: "V" },
 ]);
 
 const difficulties = ref([
@@ -139,6 +154,17 @@ function next_step() {
   }
 }
 
+function previous_step() {
+  if (step_index.value == 0) {
+    started.value = false;
+  } else {
+    step_index.value--;
+    shownTime.value = recipe.value.steps[step_index.value].timed
+      ? recipe.value.steps[step_index.value].time
+      : 0;
+  }
+}
+
 let timerInterval;
 
 function toggleTimer() {
@@ -163,6 +189,19 @@ function renderTimer() {
 
 function secondsAsString(seconds) {
   return `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60)}`;
+}
+
+function deleteRecipe() {
+  axios
+    .delete("http://localhost:5000/api/recipe/delete/" + recipe_id, {
+      withCredentials: true,
+    })
+    .then(() => {
+      router.push("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 axios
@@ -260,6 +299,20 @@ axios
   padding: 5px;
 }
 
+.delete-button {
+  padding: 10px 25px;
+  font-size: 16px;
+  color: #131313;
+  font-weight: 500;
+  border-radius: 6px;
+  background: rgb(224, 22, 22);
+  position: absolute;
+  bottom: 50px;
+  left: 50px;
+  cursor: pointer;
+  border: none;
+}
+
 .helper-button {
   padding: 10px 25px;
   font-size: 16px;
@@ -305,6 +358,19 @@ axios
   margin-top: 10px;
   background: rgba(20, 209, 111);
   color: white;
+  right: 50px;
+  padding: 10px 25px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.previous-step {
+  margin-top: 10px;
+  background: rgba(20, 209, 111);
+  color: white;
+  left: 50px;
   padding: 10px 25px;
   border-radius: 6px;
   border: none;

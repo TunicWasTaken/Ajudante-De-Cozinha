@@ -165,7 +165,7 @@ const authStore = useAuthStore();
 const types = ref([
   { text: "Carne", value: "C" },
   { text: "Peixe", value: "P" },
-  { text: "Vegan", value: "V" },
+  { text: "Vegetariana", value: "V" },
 ]);
 
 const difficulties = ref([

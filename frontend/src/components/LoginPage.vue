@@ -11,7 +11,7 @@
           <h2>Login</h2>
           <form @submit.prevent="loginUser()">
             <span class="error_msg" v-if="account_error"
-              >Usuário com esse nome já existe!</span
+              >Credenciais de Login erradas!</span
             >
             <input
               type="text"

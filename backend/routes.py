@@ -4,7 +4,7 @@ from pymongo import ReturnDocument
 from db import init_users, init_recipes
 from models import User, Recipe
 from hashlib import sha256
-from flask import jsonify, request
+from flask import jsonify, request, Response
 from datetime import datetime, timedelta, timezone
 from flask_jwt_extended import (create_access_token, get_jwt_identity, jwt_required, 
                                 unset_jwt_cookies, set_access_cookies, get_jwt)
@@ -203,3 +203,4 @@ def delete_recipe(id):
     
     recipes.delete_one({'_id': ObjectId(id)})
     return jsonify({'msg': 'Recipe deleted'}), 201
+

@@ -9,92 +9,70 @@
         <div class="filter-category">
           <h3>Tipo de Prato</h3>
           <label
-            ><input type="checkbox" name="tipo-prato" value="Carne" />
+            ><input
+              type="checkbox"
+              name="tipo-prato"
+              value="C"
+              v-model="selectedType"
+            />
             Carne</label
           >
           <label
-            ><input type="checkbox" name="tipo-prato" value="Peixe" />
+            ><input
+              type="checkbox"
+              name="tipo-prato"
+              value="P"
+              v-model="selectedType"
+            />
             Peixe</label
           >
           <label
-            ><input type="checkbox" name="tipo-prato" value="Vegetariano" />
+            ><input
+              type="checkbox"
+              name="tipo-prato"
+              value="V"
+              v-model="selectedType"
+            />
             Vegetariano</label
           >
         </div>
         <div class="filter-category">
           <h3>Duração</h3>
-          <label
-            ><input type="checkbox" name="duracao" value="<60min" />
-            &lt;60min</label
-          >
-          <label
-            ><input type="checkbox" name="duracao" value="1h-6h" /> Entre 1h e
-            6h</label
-          >
-          <label
-            ><input type="checkbox" name="duracao" value=">6h" /> &gt; 6h</label
-          >
-        </div>
-        <div class="filter-category">
-          <h3>Calorias</h3>
-          <label
-            ><input type="checkbox" name="calorias" value="<600kcal" /> &lt;600
-            kcal</label
-          >
-          <label
-            ><input type="checkbox" name="calorias" value="600-1200kcal" />
-            Entre 600 e 1200kcal</label
-          >
-          <label
-            ><input type="checkbox" name="calorias" value=">1200kcal" />
-            &gt;1200 kcal</label
-          >
+          <input
+            type="time"
+            name="duracao"
+            value="00:00"
+            v-model="selectedDuration"
+          />
         </div>
         <div class="filter-category">
           <h3>Dificuldade</h3>
           <label
-            ><input type="checkbox" name="dificuldade" value="Fácil" />
+            ><input
+              type="checkbox"
+              name="dificuldade"
+              value="F"
+              v-model="selectedDifficulty"
+            />
             Fácil</label
           >
           <label
-            ><input type="checkbox" name="dificuldade" value="Médio" />
+            ><input
+              type="checkbox"
+              name="dificuldade"
+              value="M"
+              v-model="selectedDifficulty"
+            />
             Médio</label
           >
           <label
-            ><input type="checkbox" name="dificuldade" value="Difícil" />
+            ><input
+              type="checkbox"
+              name="dificuldade"
+              value="D"
+              v-model="selectedDifficulty"
+            />
             Difícil</label
-          >
-        </div>
-        <div class="filter-category">
-          <h3>Tipo de Sabor</h3>
-          <label
-            ><input type="checkbox" name="sabor" value="Picante" />
-            Picante</label
-          >
-          <label
-            ><input type="checkbox" name="sabor" value="Azedo" /> Azedo</label
-          >
-          <label
-            ><input type="checkbox" name="sabor" value="Doce" /> Doce</label
-          >
-          <label
-            ><input type="checkbox" name="sabor" value="Salgado" />
-            Salgado</label
-          >
-        </div>
-        <div class="filter-category">
-          <h3>Outros</h3>
-          <label
-            ><input type="checkbox" name="outros" value="Sem gluten" /> Sem
-            gluten</label
-          >
-          <label
-            ><input type="checkbox" name="outros" value="Sem lactose" /> Sem
-            lactose</label
-          >
-          <label
-            ><input type="checkbox" name="outros" value="Sem frutos secos" />
-            Sem frutos secos</label
           >
         </div>
       </div>
@@ -103,7 +81,7 @@
       <div class="cards-container">
         <router-link
           class="card"
-          v-for="recipe in recipeList"
+          v-for="recipe in filteredRecipes"
           :key="recipe._id"
           :to="'/recipes/' + recipe._id"
         >
@@ -143,7 +121,7 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
 
 const route = useRoute();
@@ -158,6 +136,35 @@ const isSidebarVisible = ref(false);
 const toggleSidebar = () => {
   isSidebarVisible.value = !isSidebarVisible.value;
 };
+
+const selectedDifficulty = ref([]);
+const selectedDuration = ref(null);
+const selectedType = ref([]);
+
+const filteredRecipes = computed(() => {
+  let filtered = recipeList.value;
+
+  if (selectedDifficulty.value.length > 0) {
+    filtered = filtered.filter((recipe) =>
+      selectedDifficulty.value.includes(recipe.difficulty)
+    );
+  }
+
+  if (selectedDuration.value) {
+    let dur =
+      selectedDuration.value.split(":")[0] * 60 * 60 +
+      selectedDuration.value.split(":")[1] * 60;
+    filtered = filtered.filter((recipe) => recipe.time <= dur);
+  }
+
+  if (selectedType.value.length > 0) {
+    filtered = filtered.filter((recipe) =>
+      selectedType.value.includes(recipe.type)
+    );
+  }
+
+  return filtered;
+});
 
 let query = Object.entries(route.query)
   .map((pair) => pair.join("="))
@@ -193,5 +200,14 @@ axios
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 4px;
+}
+
+.filter-category h3 {
+  padding: 5px 5px;
+}
+
+.filter-category label {
+  padding-right: 5px;
+  padding-left: 5px;
 }
 </style>
