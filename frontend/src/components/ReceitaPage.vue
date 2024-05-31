@@ -1,6 +1,84 @@
 <template>
   <div>
-    {{ recipe }}
+    <div class="recipe-container">
+      <div class="recipe-img" v-if="!started && !done">
+        <img :src="recipe.img" />
+      </div>
+      <div class="recipe-content" v-if="!started && !done">
+        <h1 class="name">{{ recipe.name }}</h1>
+        <div class="details">
+          <div class="time">
+            <h3 id="hours" v-if="Math.floor(recipe.time / 60 / 60) > 0">
+              {{ Math.floor(recipe.time / 60 / 60) }} Hr
+            </h3>
+            <h3 id="minutes">
+              {{ recipe.time / 60 - Math.floor(recipe.time / 60 / 60) * 60 }}
+              Min
+            </h3>
+          </div>
+          <h3 class="type">
+            {{
+              types.filter((type) => type.value === recipe.type)?.[0]?.text ??
+              ""
+            }}
+          </h3>
+          <h3
+            class="diff"
+            :style="{
+              background:
+                difficulties.filter(
+                  (diff) => diff.value === recipe.difficulty
+                )?.[0]?.color ?? '',
+            }"
+          >
+            {{
+              difficulties.filter(
+                (diff) => diff.value === recipe.difficulty
+              )?.[0]?.text ?? ""
+            }}
+          </h3>
+        </div>
+        <h2 class="description">{{ recipe.description }}</h2>
+        <h1 class="ingredients-title">Ingredientes</h1>
+        <div class="ingredients-list">
+          <span
+            class="ingredient"
+            v-for="ingredient in recipe.ingredients"
+            :key="ingredient.name"
+            >{{ ingredient.name }}: {{ ingredient.quantity }}
+            {{
+              measures.filter(
+                (measure) => measure.value === ingredient.measure
+              )[0].text
+            }}</span
+          >
+        </div>
+        <button class="helper-button" v-on:click="start()">
+          Iniciar Ajudante
+        </button>
+      </div>
+      <div class="step-container" v-if="started">
+        <div class="step">
+          {{ recipe.steps[step_index]?.description ?? "" }}
+        </div>
+        <button v-if="shownTime != 0" id="timer" @click="toggleTimer">
+          {{ playing ? "⏸️" : "▶️" }}{{ secondsAsString(shownTime) }}
+        </button>
+        <button class="next-step" @click="next_step()">Próximo Passo</button>
+      </div>
+      <div class="done-container" v-if="done">
+        A receita terminou =)
+
+        <button
+          @click="
+            started = false;
+            done = false;
+          "
+        >
+          Voltar
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -12,7 +90,79 @@ import axios from "axios";
 const route = useRoute();
 const router = useRouter();
 const recipe = ref({});
+const started = ref(false);
+const step_index = ref(0);
+const done = ref(false);
 const recipe_id = route.params.id;
+
+const types = ref([
+  { text: "Carne", value: "C" },
+  { text: "Peixe", value: "P" },
+  { text: "Vegan", value: "V" },
+]);
+
+const difficulties = ref([
+  { text: "Fácil", value: "F", color: "green" },
+  { text: "Médio", value: "M", color: "#FFBF00" },
+  { text: "Díficil", value: "D", color: "red" },
+]);
+
+const measures = ref([
+  { text: "Unidades", value: "U" },
+  { text: "Doses", value: "D" },
+  { text: "Chávenas", value: "C" },
+  { text: "Colheres De Sopa", value: "CDS" },
+  { text: "Colheres De Chá", value: "CDC" },
+  { text: "mg", value: "MG" },
+  { text: "ml", value: "ML" },
+  { text: "g", value: "G" },
+]);
+
+const shownTime = ref(0);
+const playing = ref(false);
+
+function start() {
+  started.value = true;
+  step_index.value++;
+}
+
+function next_step() {
+  if (step_index.value < recipe.value.steps.length - 1) {
+    step_index.value++;
+    shownTime.value = recipe.value.steps[step_index.value].isTimed
+      ? recipe.value.steps[step_index.value].time
+      : 0;
+  } else {
+    started.value = false;
+    done.value = true;
+  }
+}
+
+let timerInterval;
+
+function toggleTimer() {
+  playing.value = !playing.value;
+
+  if (!playing.value) {
+    clearInterval(timerInterval);
+  } else {
+    timerInterval = setInterval(renderTimer, 1000);
+  }
+}
+
+function renderTimer() {
+  if (shownTime.value - 1 == 0) {
+    clearInterval(timerInterval);
+    playing.value = false;
+    return;
+  }
+
+  shownTime.value -= 1;
+}
+
+function secondsAsString(seconds) {
+  return `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60)}`;
+}
 
 axios
   .get("http://localhost:5000/api/recipe/" + recipe_id, {
@@ -29,96 +179,168 @@ axios
 </script>
 
 <style>
-#Title {
-  color: black;
-  font-size: 300%;
-  text-align: center;
-  position: relative;
-  top: 50px;
+.recipe-container {
+  display: flex;
+  padding: 50px;
+  flex-flow: column;
 }
-#Subtitle {
-  color: black;
-  font-size: 140%;
-  text-align: center;
-  position: relative;
-  top: 50px;
-  margin-left: 50px;
-  margin-right: 50px;
+
+.recipe-img {
+  position: absolute;
+  top: 150px;
+  right: 150px;
+  max-width: 300px;
+  border-radius: 10px 0px 0px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 0 2px 0px rgba(0, 0, 0, 0.25);
 }
-#ImagemReceita {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 3%;
-  position: relative;
-  top: 70px;
+
+.recipe-img img {
+  max-height: 100%;
+  max-width: 100%;
 }
-#Description {
-  margin-top: 300px;
-  margin-left: 40px;
+
+.recipe-content {
+  border-radius: 0px 10px 10px 0px;
 }
-.DescriptionText {
-  margin-top: 10px;
-  margin-left: 80px;
-  font-size: 20px;
-  border: 2px solid black;
-  border-radius: 10px;
-  padding: 20px;
-  width: 1700px;
-  text-align: left;
+
+.recipe-content .name {
+  color: #131313;
+  font-size: 28px;
+  font-weight: 500;
+  text-transform: capitalize;
 }
-#IngredientesTitle {
-  margin-top: 50px;
-  margin-left: 40px;
+
+.recipe-content .details {
+  display: flex;
+  font-weight: 400;
+  gap: 10px;
+  font-size: 14px;
+  margin: 10px 0;
 }
-#body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+
+.details .time {
+  background: #131313 !important;
+  color: white;
+  font-weight: 400;
+  padding: 5px 15px;
+  border-radius: 15px;
+}
+
+.details .type {
+  background: rgba(20, 219, 111);
+  padding: 5px 15px;
+  border-radius: 15px;
+  color: #131313;
+  font-weight: 400;
+}
+
+.details .diff {
+  color: white;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-weight: 400;
+}
+
+.recipe-content .description {
+  margin: 10px 0;
+  color: #333;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.recipe-content .ingredient-list {
+  display: flex;
+  gap: 10px;
+  padding: 5px;
+}
+
+.helper-button {
+  padding: 10px 25px;
+  font-size: 16px;
+  color: #131313;
+  font-weight: 500;
+  border-radius: 6px;
+  background: rgba(20, 219, 111);
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  animation: wiggle 3s infinite ease-in-out;
+  cursor: pointer;
+  border: none;
+}
+
+.ingredients-title {
+  color: #131313;
+  font-size: 28px;
+  font-weight: 500;
+  border-bottom: 1px solid #131313;
+  padding: 5px 0;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+
+.ingredient {
+  font-size: 16px;
+  color: black !important;
+}
+
+.step-container {
+  width: 100%;
+  height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
+  flex-flow: column;
 }
 
-.container {
-  text-align: center;
-  background: white;
-  padding: 100px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+#timer,
+.done-container button,
+.next-step {
+  margin-top: 10px;
+  background: rgba(20, 209, 111);
+  color: white;
+  padding: 10px 25px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
+#timer {
+  padding: 10px !important;
+  background: #131313;
 }
 
-.info {
+.step {
+  font-size: 32px;
+  color: #131313;
+}
+
+.done-container {
+  width: 100%;
+  height: 80vh;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  margin-top: 100px;
+  flex-flow: column;
+  font-size: 28px;
+  color: #131313;
 }
 
-.info-item {
-  display: flex;
-  align-items: center;
-  font-size: 30px;
-}
-
-.info-item .icon {
-  margin-right: 5px;
-}
-
-#imagem {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: -200px;
-  width: 50%;
-  height: 200px;
-  border-radius: 8px;
+@keyframes wiggle {
+  0% {
+    transform: rotate(5deg);
+  }
+  20% {
+    transform: rotate(-5deg);
+  }
+  30% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
 }
 </style>

@@ -12,17 +12,28 @@
         </div>
         <div class="info-container">
           <h3 class="title">{{ recipe.name }}</h3>
-          <h4 class="diff">
-            {{
-              difficulties.filter((diff) => diff.value === recipe.difficulty)[0]
-                .text
-            }}
-          </h4>
-          <h4 class="time">
-            {{ Math.floor(recipe.time / 60 / 60) }} Hr
-            {{ recipe.time / 60 - Math.floor(recipe.time / 60 / 60) * 60 }}
-            Min
-          </h4>
+          <p>{{ recipe.description }}</p>
+          <div class="info-container--footer">
+            <h4
+              class="diff"
+              :style="{
+                backgroundColor: difficulties.filter(
+                  (diff) => diff.value === recipe.difficulty
+                )[0].color,
+              }"
+            >
+              {{
+                difficulties.filter(
+                  (diff) => diff.value === recipe.difficulty
+                )[0].text
+              }}
+            </h4>
+            <h4 class="time">
+              {{ Math.floor(recipe.time / 60 / 60) }} Hr
+              {{ recipe.time / 60 - Math.floor(recipe.time / 60 / 60) * 60 }}
+              Min
+            </h4>
+          </div>
         </div>
       </router-link>
     </div>
@@ -35,9 +46,9 @@ import axios from "axios";
 
 const recipeList = ref([]);
 const difficulties = ref([
-  { text: "Fácil", value: "F" },
-  { text: "Médio", value: "M" },
-  { text: "Díficil", value: "D" },
+  { text: "Fácil", value: "F", color: "green" },
+  { text: "Médio", value: "M", color: "#FFBF00" },
+  { text: "Díficil", value: "D", color: "red" },
 ]);
 
 axios
@@ -59,40 +70,83 @@ axios
   padding: 15px;
 }
 
-.card-container {
+.cards-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  height: 100%;
 }
 
 .card {
-  margin-top: 75px;
-  height: 250%;
-  padding: 0px 20px;
+  margin-top: 40px;
+  width: 350px;
+  height: 350px;
   text-decoration: none;
-  transform: scale(1.2);
   transition: transform 0.2s ease-in-out;
+  box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
 }
 
 .img-container {
-  overflow: auto;
-  border-style: solid;
+  overflow: hidden;
   border-radius: 5px 5px 0px 0px;
-  border-color: rgb(0, 0, 0);
+  border: unset;
   padding: 3px 3px;
-  height: 45%;
+  height: 200px;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.img-container img {
+  transition: all 0.3s;
+}
+
+.img-container img:hover {
+  transform: scale(1.2);
 }
 
 .info-container {
-  height: 55%;
-  padding: 5px 5px;
+  height: fit-content;
+  height: 150px;
+  padding: 10px 15px;
   display: block;
   text-align: left;
   border-style: solid;
-  border-radius: 0px 0px 5px 5px;
-  border-color: rgb(0, 0, 0);
-  background-color: rgb(86, 253, 170);
+  border: unset;
+  background: #efefef;
+  position: relative;
+}
+
+.info-container--footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  padding: 10px;
+  left: 0;
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-between;
+}
+
+.info-container--footer h4 {
+  color: white !important;
+  padding: 5px 15px !important;
+  border-radius: 15px;
+}
+
+.info-container--footer .time {
+  background: #333;
+}
+
+.info-container p {
+  color: #333;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .popular-card:hover {
@@ -101,12 +155,16 @@ axios
 
 .info-container h3 {
   color: rgb(0, 0, 0);
-  font-size: 25px;
-  padding: 5px 0px 15px;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  text-transform: capitalize;
+  padding: 0;
 }
 
 .info-container h4 {
   color: rgb(0, 0, 0);
+  font-weight: 400;
   font-size: 15px;
   padding-bottom: 5px;
 }

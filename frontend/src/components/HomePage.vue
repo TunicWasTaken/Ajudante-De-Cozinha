@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Populares:</h1>
+    <h1>Populares</h1>
     <div class="popular-container">
       <div class="popular-cards-container">
         <router-link
@@ -14,23 +14,33 @@
           </div>
           <div class="info-container">
             <h3 class="title">{{ recipe.name }}</h3>
-            <h4 class="diff">
-              {{
-                difficulties.filter(
-                  (diff) => diff.value === recipe.difficulty
-                )[0].text
-              }}
-            </h4>
-            <h4 class="time">
-              {{ Math.floor(recipe.time / 60 / 60) }} Hr
-              {{ recipe.time / 60 - Math.floor(recipe.time / 60 / 60) * 60 }}
-              Min
-            </h4>
+            <p>{{ recipe.description }}</p>
+            <div class="info-container--footer">
+              <h4
+                class="diff"
+                :style="{
+                  backgroundColor: difficulties.filter(
+                    (diff) => diff.value === recipe.difficulty
+                  )[0].color,
+                }"
+              >
+                {{
+                  difficulties.filter(
+                    (diff) => diff.value === recipe.difficulty
+                  )[0].text
+                }}
+              </h4>
+              <h4 class="time">
+                {{ Math.floor(recipe.time / 60 / 60) }} Hr
+                {{ recipe.time / 60 - Math.floor(recipe.time / 60 / 60) * 60 }}
+                Min
+              </h4>
+            </div>
           </div>
         </router-link>
       </div>
     </div>
-    <h2>Novidades:</h2>
+    <h1>Novidades</h1>
     <div class="new-container">
       <div class="new-cards-container">
         <router-link
@@ -71,9 +81,9 @@ const top5 = ref([]);
 const newest = ref([]);
 
 const difficulties = ref([
-  { text: "Fácil", value: "F" },
-  { text: "Médio", value: "M" },
-  { text: "Díficil", value: "D" },
+  { text: "Fácil", value: "F", color: "green" },
+  { text: "Médio", value: "M", color: "#FFBF00" },
+  { text: "Díficil", value: "D", color: "red" },
 ]);
 
 axios
@@ -93,15 +103,19 @@ axios
   justify-content: center;
   height: calc(100vh - 59px);
   display: block;
-  padding: 15px;
+  padding: 50px !important;
 }
 
 .container .popular-container {
-  height: 55%;
+  height: 65%;
 }
 
 .container h1 {
   justify-content: left;
+  color: #131313;
+  font-weight: 400;
+  border-bottom: 1px solid #131313;
+  padding: 10px 0;
   text-align: left;
 }
 
@@ -109,6 +123,7 @@ axios
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 50px;
 }
 
 .popular-card {
@@ -118,47 +133,6 @@ axios
   text-decoration: none;
   transform: scale(1.2);
   transition: transform 0.2s ease-in-out;
-}
-
-.img-container {
-  overflow: auto;
-  border-style: solid;
-  border-radius: 5px 5px 0px 0px;
-  border-color: rgb(0, 0, 0);
-  padding: 3px 3px;
-  height: 45%;
-  width: 100%;
-}
-
-.info-container {
-  height: 55%;
-  padding: 5px 5px;
-  display: block;
-  text-align: left;
-  border-style: solid;
-  border-radius: 0px 0px 5px 5px;
-  border-color: rgb(0, 0, 0);
-  background-color: rgb(86, 253, 170);
-}
-
-.popular-card:hover {
-  transform: scale(1.3);
-}
-
-.info-container h3 {
-  color: rgb(0, 0, 0);
-  font-size: 25px;
-  padding: 5px 0px 15px;
-}
-
-.info-container h4 {
-  color: rgb(0, 0, 0);
-  font-size: 15px;
-  padding-bottom: 5px;
-}
-
-.container .new-container {
-  height: 35%;
 }
 
 .container h2 {

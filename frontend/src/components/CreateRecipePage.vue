@@ -17,7 +17,7 @@
           required
         />
         <select id="type" v-model="type" required>
-          <option disabled value="">Por Favor Selecione Uma</option>
+          <option disabled value="">Tipo</option>
           <option
             v-for="foodType in types"
             :key="foodType.value"
@@ -28,7 +28,7 @@
         </select>
         <input id="total-time" type="time" v-model="totalTime" required />
         <select id="difficulty" v-model="difficulty" required>
-          <option disabled value="">Por Favor Selecione Uma</option>
+          <option disabled value="">Dificuldade</option>
           <option
             v-for="diff in difficulties"
             :key="diff.value"
@@ -38,13 +38,31 @@
           </option>
         </select>
         <select id="portion" v-model="portion" required>
-          <option disabled value="0">Por Favor Selecione Uma</option>
+          <option disabled value="0">Porção</option>
           <option v-for="n in 12" :key="n" :value="n">{{ n }}</option>
         </select>
         <div class="ingredient-container">
           <span class="ingredient-error" v-if="error === 1"
             >É Necessário Adicionar Ingredientes</span
           >
+          <div
+            class="display-ingredients"
+            v-for="(curr_ingredient, index) in ingredientList"
+            :key="index"
+          >
+            {{
+              curr_ingredient.name.length > 20
+                ? curr_ingredient.name.slice(0, 20) + "..."
+                : curr_ingredient.name
+            }}
+            :
+            {{ curr_ingredient.quantity }}
+            {{
+              measures.find(
+                (measure) => measure.value === curr_ingredient.measure
+              ).text
+            }}
+          </div>
           <form class="ingredient-form" @submit.prevent="addIngredient()">
             <input
               id="ingredient-name"
@@ -66,7 +84,7 @@
               v-model="ingredient.measure"
               required
             >
-              <option disabled value="">Por Favor Selecione Uma</option>
+              <option disabled value="">Unidade</option>
               <option
                 v-for="measure in measures"
                 :key="measure.value"
@@ -77,29 +95,24 @@
             </select>
             <button>Adicionar Ingrediente</button>
           </form>
-          <div
-            class="display-ingredients"
-            v-for="(curr_ingredient, index) in ingredientList"
-            :key="index"
-          >
-            {{
-              curr_ingredient.name.length > 20
-                ? curr_ingredient.name.slice(0, 20) + "..."
-                : curr_ingredient.name
-            }}
-            :
-            {{ curr_ingredient.quantity }}
-            {{
-              measures.find(
-                (measure) => measure.value === curr_ingredient.measure
-              ).text
-            }}
-          </div>
         </div>
         <div class="steps-container">
           <span class="ingredient-error" v-if="error === 2"
             >É Necessário Adicionar Passos</span
           >
+          <div
+            class="display-steps"
+            v-for="(curr_step, index) in stepList"
+            :key="index"
+          >
+            Passo {{ index + 1 }} :
+            {{
+              curr_step.description.length > 20
+                ? curr_step.description.slice(0, 20) + "..."
+                : curr_step.description
+            }}
+            {{ curr_step.time != "00:00" ? curr_step.time : "" }}
+          </div>
           <form class="steps-form" @submit.prevent="addStep()">
             <input
               id="step-description"
@@ -119,22 +132,9 @@
             />
             <button>Adicionar Passo</button>
           </form>
-          <div
-            class="display-steps"
-            v-for="(curr_step, index) in stepList"
-            :key="index"
-          >
-            Passo {{ index + 1 }} :
-            {{
-              curr_step.description.length > 20
-                ? curr_step.description.slice(0, 20) + "..."
-                : curr_step.description
-            }}
-            {{ curr_step.time != "00:00" ? curr_step.time : "" }}
-          </div>
         </div>
         <div class="add-img-container">
-          <span class="add-image">Adicionar Imagem de Capa:</span>
+          <span class="add-image">Imagem de Capa</span>
           <input
             id="image-input"
             type="file"
@@ -274,4 +274,116 @@ async function submitRecipe() {
 }
 </script>
 
-<style></style>
+<style scoped>
+form {
+  padding: 20px;
+}
+
+form input {
+  height: 40px;
+  font-size: 14px;
+  width: 400px;
+}
+
+form select {
+  height: 40px;
+  width: 400px;
+}
+
+button {
+  width: 400px;
+  background: rgba(20, 219, 111);
+  border: unset;
+  color: white;
+  margin-top: 0;
+}
+
+.ingredient-form {
+  display: flex;
+  flex-flow: row;
+  display: flex;
+  flex-wrap: wrap;
+  width: 380px;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.ingredient-form input {
+  width: 200px;
+}
+
+.ingredient-form input:nth-child(2) {
+  width: 80px;
+}
+
+.ingredient-form select {
+  width: 80px;
+}
+
+.ingredient-form button {
+  width: 100%;
+}
+
+.steps-form {
+  width: 380px;
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  padding: 0;
+  justify-content: flex-start;
+  margin: 10px 0;
+}
+
+.steps-form #step-description {
+  width: 400px;
+}
+
+.steps-form #step-isTimed {
+  width: 40px;
+}
+
+.steps-form button {
+  width: 100%;
+}
+
+.add-img-container {
+  display: flex;
+  flex-flow: column;
+  gap: 5px;
+}
+
+label,
+span {
+  color: #131313;
+  font-size: 16px;
+}
+
+.preview {
+  max-width: 400px;
+}
+
+.display-ingredients {
+  font-size: 16px;
+  color: #131313;
+}
+
+.ingredient-container {
+  width: 400px;
+  background: #dadada;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.steps-container {
+  width: 400px;
+  background: #dadada;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.display-steps {
+  font-size: 16px;
+  margin: 5px 0;
+  color: #131313;
+}
+</style>

@@ -77,18 +77,12 @@ function search() {
   box-sizing: border-box;
 }
 
-body {
-  overflow: hidden;
-}
-
 .topnav {
   background-color: rgb(0, 0, 0);
-  overflow: hidden;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px;
 }
 
 .topnav .home {
@@ -98,15 +92,18 @@ body {
 .topnav .login {
   float: right;
   text-align: center;
-  padding: 8px 8px;
+  padding: 10px 20px;
   margin: 7px 10px;
-  border-radius: 15px;
+  border-radius: 6px;
   text-decoration: none;
-  color: rgb(3, 219, 111);
+  background: rgb(20, 219, 111, 0.8);
+  color: white;
+  height: 35px;
+  transition: all 0.3s;
 }
 
 .topnav .login:hover {
-  background-color: rgb(3, 219, 111);
+  background-color: rgb(20, 219, 111);
   color: rgb(255, 255, 255);
 }
 
@@ -160,13 +157,21 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 300px;
+}
+
+.search-content {
+  width: 100%;
 }
 
 .search-content #search-bar {
-  background-color: white;
+  background-color: #ddd;
   color: black;
-  font-size: 13px;
-  border-radius: 15px;
-  width: 150%;
+  font-size: 14px;
+  width: 100%;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  height: 35px;
 }
 </style>
