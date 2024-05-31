@@ -75,11 +75,12 @@ axios
   gap: 30px;
   width: 100%;
   height: 100%;
+  flex-wrap: wrap;
 }
 
 .card {
   margin-top: 40px;
-  width: 350px;
+  width: 325px;
   height: 350px;
   text-decoration: none;
   transition: transform 0.2s ease-in-out;

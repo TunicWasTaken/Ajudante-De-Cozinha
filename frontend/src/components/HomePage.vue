@@ -47,7 +47,7 @@
           class="new-card"
           v-for="recipe in newest"
           :key="recipe._id"
-          :to="recipe._id"
+          :to="'/recipes/' + recipe._id"
         >
           <div class="img-container">
             <img class="img" :src="recipe.img" />
@@ -129,6 +129,7 @@ axios
 .popular-card {
   margin-top: 75px;
   height: 250%;
+  width: 300px;
   padding: 0px 20px;
   text-decoration: none;
   transform: scale(1.2);

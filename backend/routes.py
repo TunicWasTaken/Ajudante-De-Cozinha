@@ -79,7 +79,6 @@ def refresh_token(response):
             set_access_cookies(response, access_token)
         return response
     except (RuntimeError, KeyError):
-        # Case where there is not a valid JWT. Just return the original response
         return response
 
 
@@ -147,7 +146,7 @@ def sort_by_views(recipe):
 @app.route("/api/recipes/homepage", methods=['GET'])
 def homepage():
 
-    recipe_list_top5 = list(recipes.find().limit(8))
+    recipe_list_top5 = list(recipes.find().limit(6))
     
     recipe_list_top5.sort(key=sort_by_views, reverse=True)
     
@@ -167,23 +166,27 @@ def homepage():
 def search_recipe():
     
     params = request.query_string.decode()
+    name = ""
     query = {}
+    alike_recipes = []
 
     for param in params.split('&'):
         key, value = param.split("=")
 
         if key == 'q':
-            key = 'name'
+            name = value
+            continue
 
         query[key] = value
 
-    recipe_list = list(recipes.find(query))
+    recipe_list = list(recipes.find(query).sort({'_id': -1}))
 
     for recipe in recipe_list:
         recipe["_id"] = str(recipe["_id"])
+        if name.lower() in recipe["name"]:
+            alike_recipes.append(recipe)
 
-    return jsonify({'recipes': recipe_list}), 201
-
+    return jsonify({'recipes': alike_recipes}), 201
 
 
 @app.route("/api/recipe/delete/<id>", methods=['DELETE'])

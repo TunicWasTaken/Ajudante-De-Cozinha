@@ -123,13 +123,12 @@ const playing = ref(false);
 
 function start() {
   started.value = true;
-  step_index.value++;
 }
 
 function next_step() {
   if (step_index.value < recipe.value.steps.length - 1) {
     step_index.value++;
-    shownTime.value = recipe.value.steps[step_index.value].isTimed
+    shownTime.value = recipe.value.steps[step_index.value].timed
       ? recipe.value.steps[step_index.value].time
       : 0;
   } else {
@@ -226,6 +225,8 @@ axios
   font-weight: 400;
   padding: 5px 15px;
   border-radius: 15px;
+  display: flex;
+  gap: 10px;
 }
 
 .details .type {
