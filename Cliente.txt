@@ -1,6 +1,0 @@
-{
-	"Username": Username,
-	"Email": Email,
-	"Password": Password,
-	"Permissions": Permissions
-}
